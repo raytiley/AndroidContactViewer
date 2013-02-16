@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="vertical"
+    android:background="@drawable/item_background" >
+    
+    <TextView android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:layout_margin="4dp"
+        android:textStyle="bold"
+        android:text="Name"/>
+    
+    <TextView android:id="@+id/item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:textStyle="italic"
+        android:layout_margin="4dp"
+        android:layout_alignParentBottom="true"
+        android:text="Title"/>
+    
+    <ImageView android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@android:drawable/ic_media_play" 
+        />
+    
+    <TextView android:id="@+id/item_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:layout_margin="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/item_icon"
+        android:text="Phone"/>
+
+</RelativeLayout>

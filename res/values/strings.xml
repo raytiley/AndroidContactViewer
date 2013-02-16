@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello_world">Hello World!</string>
     <string name="app_name">ContactViewer</string>
     <string name="contacts">Contacts</string>
     <string name="about">About</string>
     <string name="back">Back</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="name">Name</string>
+    <string name="title">Title</string>
+    <string name="email">Email</string>
+    <string name="emails">Emails</string>
+    <string name="phone">Phone</string>
+    <string name="phones">Phones</string>
+    <string name="phone_numbers">Phone Numbers</string>
+    <string name="call_number">Call Number</string>
+    <string name="text_number">Text Number</string>
+
 </resources>

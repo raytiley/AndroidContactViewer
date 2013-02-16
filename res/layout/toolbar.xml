@@ -5,14 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     style="@style/Toolbar">
+    
+    <Button android:id="@+id/toolbar_left_button"
+        style="@style/ToolbarButton"
+        android:text=""
+        android:layout_weight="0" />
+        
 	<TextView android:id="@+id/toolbar_title"
 	    style="@style/ToolbarTitle"
-	    android:text="Title"
+	    android:text=""
         android:layout_weight="1"/>
+        
     <Button android:id="@+id/toolbar_right_button"
         style="@style/ToolbarButton"
-        android:text="Right"
+        android:text=""
         android:layout_weight="0">
+        
     </Button>
 </LinearLayout>
     

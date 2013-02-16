@@ -1,19 +1,83 @@
 package com.example.AndroidContactViewer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 /** Model class for storing a single contact.
  *
  */
 public class Contact {
 	
+	/**
+	 * The contact ID
+	 */
+	private int _contactId;
+	
+	/**
+	 * The contact name.
+	 */
+	private String _name;
+
+	/**
+	 * The contact's title.
+	 */
+	private String _title;
+	
+	
+	/**
+	 * The default phone number to use for texting.
+	 */
+	private String _defaultTextPhone;
+	
+	/**
+	 * The default phone number to use when making a call.
+	 */
+	private String _defaultContactPhone;
+	
+	/**
+	 * The list of all phone numbers associated with this contact.
+	 */
+	private SortedSet<String> _phones;
+	
+	/**
+	 * The default e-mail to use to send an e-mail.
+	 */
+	private String _defaultEmail;
+
+	/**
+	 * The list of all e-mails associated with this contact.
+	 */
+	private SortedSet<String> _emails;
+
+	/**
+	 * The contact's Twitter ID.
+	 */
+	private String _twitterId;
+
 	/** Creates a contact and assigns its name.
 	 * 
 	 * @param name the contact's name
 	 */
-	public Contact(String name) {
+	public Contact(int contactId, String name) {
+		_contactId = contactId;
 		_name = name;
+		_title = null;
+		_defaultContactPhone = null;
+		_defaultTextPhone = null;
+		_phones = new TreeSet<String>();
+		_defaultEmail = null;
+		_emails = new TreeSet<String>();
+		_twitterId = null;
 	}
 	
-	private String _name;
+	/**
+	 * Gets the contact's ID.
+	 */
+	public int getContactId() {
+		return _contactId;
+	}
 	
 	/** Set the contact's name.
 	 */
@@ -28,24 +92,68 @@ public class Contact {
 		return _name;
 	}
 	
-	private String _phone;
-
 	/**
-	 * @return the contact's phone number
+	 * @return the contact's default texting phone number
 	 */
-	public String getPhone() {
-		return _phone;
+	public String getDefaultTextPhone() {
+		return _defaultTextPhone;
 	}
 
-	/** Set's the contact's phone number.
+	/** Set's the contact's default texting phone number.
 	 */
-	public Contact setPhone(String phone) {
-		_phone = phone;
+	public Contact setDefaultTextPhone(String defaultTextPhone) {
+		_defaultTextPhone = defaultTextPhone;
+		_phones.add(_defaultTextPhone);
 		return this;
 	}
 	
-	private String _title;
+	/**
+	 * @return the contact's default contact phone number
+	 */
+	public String getDefaultContactPhone() {
+		return _defaultContactPhone;
+	}
 
+	/** Set's the contact's default contact phone number.
+	 */
+	public Contact setDefaultContactPhone(String defaultContactPhone) {
+		_defaultContactPhone = defaultContactPhone;
+		_phones.add(_defaultContactPhone);
+		return this;
+	}
+	
+	/**
+	 * Gets the list of phone numbers associated with this contact.
+	 * @return The contact's phone numbers.
+	 */
+	public List<String> getPhoneNumbers() {
+		return new ArrayList<String>(_phones);
+	}
+	
+	/**
+	 * Adds the given phone number to the list of phone numbers associated with this account.
+	 * 
+	 * @param phoneNumber The phone number to add.
+	 */
+	public void addPhoneNumber(String phoneNumber) {
+		_phones.add(phoneNumber);
+	}
+	
+	/**
+	 * Removes the given phone number from the list of phone numbers associated with this account.
+	 * 
+	 * @param phoneNumber The phone number to remove from the account.
+	 */
+	public void removePhoneNumber(String phoneNumber) {
+		_phones.remove(phoneNumber);
+		if (phoneNumber == _defaultContactPhone) {
+			_defaultContactPhone = null;
+		}
+		if (phoneNumber == _defaultTextPhone) {
+			_defaultTextPhone = null;
+		}
+	}
+	
 	/**
 	 * @return The contact's title
 	 */
@@ -60,24 +168,50 @@ public class Contact {
 		return this;
 	}
 	
-	private String _email;
-
 	/**
-	 * @return the contact's e-mail address
+	 * @return the contact's default e-mail address
 	 */
-	public String getEmail() {
-		return _email;
+	public String getDefaultEmail() {
+		return _defaultEmail;
 	}
 
-	/** Sets the contact's e-mail address.
+	/** Sets the contact's default e-mail address.
 	 */
-	public Contact setEmail(String email) {
-		_email = email;
+	public Contact setDefaultEmail(String defaultEmail) {
+		_defaultEmail = defaultEmail;
+		_emails.add(_defaultEmail);
 		return this;
 	}
 	
-	private String _twitterId;
-
+	/**
+	 * Gets the list of e-mails associated with this contact.
+	 * @return The contact's e-mails.
+	 */
+	public List<String> getEmails() {
+		return new ArrayList<String>(_emails);
+	}
+	
+	/**
+	 * Adds the given email to the list of emails associated with this account.
+	 * 
+	 * @param phoneNumber The phone number to add.
+	 */
+	public void addEmail(String email) {
+		_emails.add(email);
+	}
+	
+	/**
+	 * Removes the given e-mail from the list of e-mails associated with this account.
+	 * 
+	 * @param email The e-mail to remove.
+	 */
+	public void removeEmail(String email) {
+		_emails.remove(email);
+		if (email == _defaultEmail) {
+			_defaultEmail = null;
+		}
+	}
+	
 	/**
 	 * @return the contact's Twitter ID
 	 */
@@ -92,8 +226,30 @@ public class Contact {
 		return this;
 	}
 	
+	/**
+	 * Returns a string representation of this class.
+	 */
 	public String toString() {
-		return _name + " (" + _title + ")";
+		if (_title != null) {
+			return _name + " (" + _title + ")";
+		}
+		else {
+			return _name;
+		}
+	}
+	
+	/**
+	 *  Compares if two contacts are identical.  Contacts are identical if their
+	 *  Contact ID is the same.
+	 */
+	public boolean equals(Object other) {
+		if (!(other instanceof Contact)) {
+			return false;
+		}
+		if (((Contact)other)._contactId == _contactId) {
+			return true;
+		}
+		return false;
 	}
 }
 

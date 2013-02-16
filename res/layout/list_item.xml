@@ -5,12 +5,20 @@
     android:orientation="vertical"
     android:background="@drawable/item_background" >
     
+    <ImageView
+        android:id="@+id/item_profile_image"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_margin="4dp"
+        android:src="@drawable/profile_image" />
+    
     <TextView android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="24dp"
         android:layout_margin="4dp"
         android:textStyle="bold"
+        android:layout_toRightOf="@id/item_profile_image"
         android:text="Name"/>
     
     <TextView android:id="@+id/item_title"
@@ -20,6 +28,7 @@
         android:textStyle="italic"
         android:layout_margin="4dp"
         android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/item_profile_image"
         android:text="Title"/>
     
     <ImageView android:id="@+id/item_icon"

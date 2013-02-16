@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="32dp"
+    android:orientation="horizontal" >
+    
+    <TextView android:id="@+id/profile_phone_item_text"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="4dp"
+        android:text="@string/phone" />
+    
+    <ImageView
+        android:id="@+id/profile_phone_item_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/call_number"
+        android:src="@drawable/phone" />
+    
+    <ImageView
+        android:id="@+id/profile_phone_item_texting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/profile_phone_item_contact"
+        android:contentDescription="@string/text_number"
+        android:src="@drawable/texting" />
+    
+
+</RelativeLayout>

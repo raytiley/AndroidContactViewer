@@ -2,6 +2,8 @@ package com.example.AndroidContactViewer;
 
 import java.util.List;
 
+import com.example.AndroidContactViewer.datastore.ContactDataSource;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -25,8 +27,10 @@ public class ContactProfile extends Activity {
 		int contactID = (Integer)getIntent().getExtras().get("ContactID");
 		
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Profile");
-		
-		contact = ContactRepository.getRepository().getContact(contactID);
+		ContactDataSource datasource = new ContactDataSource(this);
+		datasource.open();
+		contact = datasource.get(contactID);
+		datasource.close();
 
 		// setup the "Edit" button
 		Button button = toolbar.getToolbarRightButton();

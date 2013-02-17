@@ -1,6 +1,5 @@
 package com.example.AndroidContactViewer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ListActivity;
@@ -10,20 +9,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.AndroidContactViewer.datastore.ContactDataSource;
+
 public class ContactListActivity extends ListActivity {
+
+	private ContactDataSource datasource;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
+
+		datasource = new ContactDataSource(this);
+		datasource.open();
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();
@@ -37,32 +42,18 @@ public class ContactListActivity extends ListActivity {
 			}
 		});
 
-		// make some contacts
-
 		// initialize the list view
-		setListAdapter(new ContactAdapter(this, R.layout.list_item, ContactRepository.getRepository().getContacts()));
+		setListAdapter(new ContactAdapter(this, R.layout.list_item, datasource.all()));
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
+	}
 
-		// handle the item click events
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				/*
-				// When clicked, show a toast with the TextView text
-				Toast.makeText(
-						getApplicationContext(),
-						"Clicked: "
-								+ ((ContactAdapter) getListAdapter()).getItem(
-										position).getName(), Toast.LENGTH_SHORT)
-						.show();
-				*/
-				Intent myIntent = new Intent(getBaseContext(), ContactProfile.class);
-				myIntent.putExtra("ContactID", ((ContactAdapter)getListAdapter()).getItem(position).getContactId());
-				startActivity(myIntent);
-			}
-		});
-
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Intent myIntent = new Intent(getBaseContext(), ContactProfile.class);
+		myIntent.putExtra("ContactID", ((ContactAdapter)getListAdapter()).getItem(position).getContactId());
+		startActivity(myIntent);
 	}
 
 	/*

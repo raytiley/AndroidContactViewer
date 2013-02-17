@@ -6,22 +6,18 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 public class ContactListActivity extends ListActivity {
-
+    ContactListActivity _activity = null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        _activity = this;
+
 		setContentView(R.layout.list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
 
@@ -44,14 +40,54 @@ public class ContactListActivity extends ListActivity {
 		datasource.close();
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                _activity.closeContextMenu();
+                return false;
+            }
+        });
+
+        // setup context menu
+        registerForContextMenu(lv);
 	}
 
-	@Override
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.call:
+                Toast.makeText(this, "Call", 5).show();
+                return true;
+            case R.id.message:
+                Toast.makeText(this, "Message", 5).show();
+                return true;
+            case R.id.email:
+                Toast.makeText(this, "email", 5).show();
+                return true;
+            case R.id.profile:
+                Intent myIntent = new Intent(getBaseContext(), ContactProfile.class);
+                myIntent.putExtra("ContactID", ((ContactAdapter)getListAdapter()).getItem(info.position).getContactId());
+                startActivity(myIntent);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		Intent myIntent = new Intent(getBaseContext(), ContactProfile.class);
-		myIntent.putExtra("ContactID", ((ContactAdapter)getListAdapter()).getItem(position).getContactId());
-		startActivity(myIntent);
+
+        this.openContextMenu(v);
+
 	}
 
 	/*

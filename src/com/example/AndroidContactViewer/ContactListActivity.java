@@ -19,16 +19,11 @@ import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 public class ContactListActivity extends ListActivity {
 
-	private ContactDataSource datasource;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
-
-		datasource = new ContactDataSource(this);
-		datasource.open();
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();
@@ -43,7 +38,10 @@ public class ContactListActivity extends ListActivity {
 		});
 
 		// initialize the list view
+		ContactDataSource datasource = new ContactDataSource(this);
+		datasource.open();
 		setListAdapter(new ContactAdapter(this, R.layout.list_item, datasource.all()));
+		datasource.close();
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
 	}

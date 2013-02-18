@@ -15,15 +15,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class ContactProfile extends Activity {
+public class ContactViewActivity extends Activity {
 	private Contact contact;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_contact_profile);
+		setContentView(R.layout.contact_view);
 		
 		int contactID = (Integer)getIntent().getExtras().get("ContactID");
 		
@@ -54,8 +53,8 @@ public class ContactProfile extends Activity {
 		
 		((TextView)findViewById(R.id.profile_name)).setText(contact.getName());
 		((TextView)findViewById(R.id.profile_title)).setText(contact.getTitle());
-		((ListView)findViewById(R.id.profile_email_list)).setAdapter(new EmailListAdapter(this, R.layout.profile_email_item, contact.getEmails()));
-		((ListView)findViewById(R.id.profile_phone_list)).setAdapter(new PhoneListAdapter(this, R.layout.profile_phone_item, contact.getPhoneNumbers()));
+		((ListView)findViewById(R.id.profile_email_list)).setAdapter(new EmailListAdapter(this, R.layout.contact_email_view_item, contact.getEmails()));
+		((ListView)findViewById(R.id.profile_phone_list)).setAdapter(new PhoneListAdapter(this, R.layout.contact_phone_view_item, contact.getPhoneNumbers()));
 	}
 
 	/*
@@ -71,7 +70,7 @@ public class ContactProfile extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = getLayoutInflater();
-			View item = inflater.inflate(R.layout.profile_email_item, parent, false);
+			View item = inflater.inflate(R.layout.contact_email_view_item, parent, false);
 
 			String email = getItem(position);
 			((TextView) item.findViewById(R.id.profile_email_item_text)).setText(email);
@@ -93,7 +92,7 @@ public class ContactProfile extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = getLayoutInflater();
-			View item = inflater.inflate(R.layout.profile_phone_item, parent, false);
+			View item = inflater.inflate(R.layout.contact_phone_view_item, parent, false);
 
 			String phone = getItem(position);
 			((TextView) item.findViewById(R.id.profile_phone_item_text)).setText(phone);

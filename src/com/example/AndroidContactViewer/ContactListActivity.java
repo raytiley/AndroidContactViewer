@@ -18,7 +18,7 @@ public class ContactListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
         _activity = this;
 
-		setContentView(R.layout.list);
+		setContentView(R.layout.contact_list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
 
 		// setup the about button
@@ -40,7 +40,7 @@ public class ContactListActivity extends ListActivity {
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
-		setListAdapter(new ContactAdapter(this, R.layout.list_item, datasource.all()));
+		setListAdapter(new ContactAdapter(this, R.layout.contact_list_item, datasource.all()));
 		datasource.close();
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -77,7 +77,7 @@ public class ContactListActivity extends ListActivity {
                 Toast.makeText(this, "email", 5).show();
                 return true;
             case R.id.profile:
-                Intent myIntent = new Intent(getBaseContext(), ContactProfile.class);
+                Intent myIntent = new Intent(getBaseContext(), ContactViewActivity.class);
                 myIntent.putExtra("ContactID", ((ContactAdapter)getListAdapter()).getItem(info.position).getContactId());
                 startActivity(myIntent);
                 return true;
@@ -108,7 +108,7 @@ public class ContactListActivity extends ListActivity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = getLayoutInflater();
-			View item = inflater.inflate(R.layout.list_item, parent, false);
+			View item = inflater.inflate(R.layout.contact_list_item, parent, false);
 
 			Contact contact = getItem(position);
 			((TextView) item.findViewById(R.id.item_name)).setText(contact

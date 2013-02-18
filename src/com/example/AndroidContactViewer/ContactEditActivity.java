@@ -1,12 +1,10 @@
 package com.example.AndroidContactViewer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
@@ -24,7 +22,7 @@ public class ContactEditActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.profile_edit);
+        setContentView(R.layout.contact_edit);
 
         int contactID = (Integer)getIntent().getExtras().get("ContactID");
 

@@ -9,18 +9,19 @@
     <application android:label="@string/app_name" >
         <activity
             android:name="com.example.AndroidContactViewer.ContactListActivity"
+            android:theme="@android:style/Theme.NoTitleBar" 
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ContactViewActivity"
-            android:label="@string/title_activity_profile" >
-        </activity>
-        <activity android:name=".ContactEditActivity"/>
+            android:theme="@android:style/Theme.NoTitleBar" 
+            android:label="@string/title_activity_profile" />
+        <activity android:name=".ContactEditActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
     </application>
 
 </manifest>

@@ -6,4 +6,5 @@
     <color name="foreground_stop">#48000F</color>
     <color name="border">#000</color>
     <color name="tool_text_color">#FFF</color>
+    <color name="divider">#202020</color>
 </resources>

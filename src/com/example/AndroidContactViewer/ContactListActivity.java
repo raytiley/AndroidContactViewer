@@ -20,6 +20,7 @@ public class ContactListActivity extends ListActivity {
 
 		setContentView(R.layout.list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
+		toolbar.hideLeftButton();
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();

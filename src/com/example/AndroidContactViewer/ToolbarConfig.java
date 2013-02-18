@@ -1,6 +1,7 @@
 package com.example.AndroidContactViewer;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -42,6 +43,20 @@ public class ToolbarConfig {
      */
     public TextView getToolbarTitleView() {
     	return (TextView)_activity.findViewById(R.id.toolbar_title);
+    }
+    
+    /**
+     * Hides the left toolbar button
+     */
+    public void hideLeftButton() {
+    	getToolbarLeftButton().setVisibility(View.GONE);
+    }
+    
+    /**
+     * Hides the right toolbar button
+     */
+    public void hideRightButton() {
+    	getToolbarRightButton().setVisibility(View.GONE);
     }
 	
 }

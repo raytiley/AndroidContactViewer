@@ -1,13 +1,13 @@
 package com.example.AndroidContactViewer;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,7 +19,8 @@ import android.widget.*;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 public class ContactListActivity extends ListActivity {
-    ContactListActivity _activity = null;
+    private ContactListActivity _activity = null;
+    protected ContactAdapter contact_adapter;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,7 +53,8 @@ public class ContactListActivity extends ListActivity {
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
-		setListAdapter(new ContactAdapter(this, R.layout.contact_list_item, datasource.all()));
+        contact_adapter = new ContactAdapter(this, R.layout.contact_list_item, datasource.all());
+		setListAdapter(contact_adapter);
 		datasource.close();
 		
 		Intent intent = getIntent();
@@ -74,6 +76,25 @@ public class ContactListActivity extends ListActivity {
 
         // setup context menu
         registerForContextMenu(lv);
+
+        //Setup Search
+        EditText search_box = (EditText)findViewById(R.id.search_box);
+        search_box.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                ContactListActivity.this.contact_adapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
 	}
 
     @Override

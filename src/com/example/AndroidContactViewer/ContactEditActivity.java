@@ -65,13 +65,13 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         ((EditText)findViewById(R.id.edit_contact_title)).setText(_contact.getTitle());
 
         List<String> emailList = _contact.getEmails();
-
+        LinearLayout emails = (LinearLayout)findViewById(R.id.contact_edit_email_list);
         if (emailList.size() != 0) {
             // Can't use a ListView for e-mails or phone lists since we want the entire
             // profile screen to scroll rather than two scroll areas for the e-mails and
             // phone lists.
 
-            LinearLayout emails = (LinearLayout)findViewById(R.id.contact_edit_email_list);
+
             for (String email : emailList) {
                 LayoutInflater inflater = getLayoutInflater();
                 View item = inflater.inflate(R.layout.contact_email_edit_item, emails, false);
@@ -79,8 +79,12 @@ public class ContactEditActivity extends Activity implements OnClickListener {
                 ((EditText) item.findViewById(R.id.contact_edit_email_edit_text)).setText(email);
 
                 ImageButton email_btn = (ImageButton)item.findViewById(R.id.contact_edit_email_action);
-                email_btn.setTag(email);
+                email_btn.setTag(item);
                 email_btn.setOnClickListener(this);
+
+                ImageButton remove_btn = (ImageButton)item.findViewById(R.id.contact_edit_email_delete);
+                remove_btn.setTag(item);
+                remove_btn.setOnClickListener(this);
 
                 emails.addView(item);
             }
@@ -92,9 +96,9 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         // Add phones to view
 
         List<String> phoneList = _contact.getPhoneNumbers();
-
+        LinearLayout phones = (LinearLayout)findViewById(R.id.contact_edit_phone_list);
         if (phoneList.size() != 0) {
-            LinearLayout phones = (LinearLayout)findViewById(R.id.contact_edit_phone_list);
+
             for (String phone : phoneList) {
                 LayoutInflater inflater = getLayoutInflater();
                 View item = inflater.inflate(R.layout.contact_phone_edit_item, phones, false);
@@ -102,12 +106,16 @@ public class ContactEditActivity extends Activity implements OnClickListener {
                 ((EditText) item.findViewById(R.id.contact_edit_phone_edit_text)).setText(phone);
 
                 ImageButton contact_btn = (ImageButton)item.findViewById(R.id.contact_edit_call_action);
-                contact_btn.setTag(phone);
+                contact_btn.setTag(item);
                 contact_btn.setOnClickListener(this);
 
                 ImageButton text_btn = (ImageButton)item.findViewById(R.id.contact_edit_txt_action);
-                text_btn.setTag(phone);
+                text_btn.setTag(item);
                 text_btn.setOnClickListener(this);
+
+                ImageButton remove_btn = (ImageButton)item.findViewById(R.id.contact_edit_phone_delete);
+                remove_btn.setTag(item);
+                remove_btn.setOnClickListener(this);
 
                 phones.addView(item);
             }
@@ -115,29 +123,50 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             // If there are no phone numbers associated with this contact, don't show the label
             ((TextView)findViewById(R.id.profile_phones_label)).setVisibility(View.GONE);
         }
+
+        // Setup Add Buttons
+        ImageButton phone_add = (ImageButton)findViewById(R.id.contact_edit_phone_add);
+        phone_add.setOnClickListener(this);
+
+        ImageButton emails_add = (ImageButton)findViewById(R.id.contact_edit_email_add);
+        emails_add.setOnClickListener(this);
     }
 
     public void onClick(View v) {
+        View view = (View)v.getTag();
+        String text = null;
         switch(v.getId()) {
             case R.id.contact_edit_txt_action:
-                String txtPhone = (String)v.getTag();
+            case R.id.contact_edit_call_action:
+            case R.id.contact_edit_phone_delete:
+                text = ((EditText)view.findViewById(R.id.contact_edit_phone_edit_text)).getText().toString();
+                break;
+            case R.id.contact_edit_email_action:
+            case R.id.contact_edit_email_delete:
+                text = ((EditText)view.findViewById(R.id.contact_edit_email_edit_text)).getText().toString();
+                break;
+            default:
+                text = "Unknown";
+        }
+
+
+        switch(v.getId()) {
+            case R.id.contact_edit_txt_action:
                 Toast.makeText(
                         ContactEditActivity.this,
-                        "Set default for txt messages to: " + txtPhone,
+                        "Set default for txt messages to: " + text,
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.contact_edit_call_action:
-                String callPhone = (String)v.getTag();
                 Toast.makeText(
                         ContactEditActivity.this,
-                        "Set default for calling to: " + callPhone,
+                        "Set default for calling to: " + text,
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.contact_edit_email_action:
-                String email = (String)v.getTag();
                 Toast.makeText(
                         ContactEditActivity.this,
-                        "Set default for emailing to: " + email,
+                        "Set default for emailing to: " + text,
                         Toast.LENGTH_SHORT).show();
                 break;
             case R.id.toolbar_left_button:
@@ -149,6 +178,26 @@ public class ContactEditActivity extends Activity implements OnClickListener {
                         "Saving Contact",
                         Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.contact_edit_phone_delete:
+                Toast.makeText(
+                        ContactEditActivity.this,
+                        "Remove phone: " + text,
+                        Toast.LENGTH_SHORT).show();
+                ((LinearLayout)findViewById(R.id.contact_edit_phone_list)).removeView(view);
+                break;
+            case R.id.contact_edit_email_delete:
+                Toast.makeText(
+                        ContactEditActivity.this,
+                        "Remove email: " + text,
+                        Toast.LENGTH_SHORT).show();
+                ((LinearLayout)findViewById(R.id.contact_edit_email_list)).removeView(view);
+                break;
+            case R.id.contact_edit_phone_add:
+                addViewForPhone();
+                break;
+            case R.id.contact_edit_email_add:
+                addViewForEmail();
+                break;
             default:
                 Toast.makeText(
                         ContactEditActivity.this,
@@ -157,5 +206,43 @@ public class ContactEditActivity extends Activity implements OnClickListener {
                 break;
 
         }
+    }
+
+    private void addViewForPhone() {
+        LinearLayout phones = (LinearLayout)findViewById(R.id.contact_edit_phone_list);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View item = inflater.inflate(R.layout.contact_phone_edit_item, phones, false);
+
+        ImageButton contact_btn = (ImageButton)item.findViewById(R.id.contact_edit_call_action);
+        contact_btn.setTag(item);
+        contact_btn.setOnClickListener(this);
+
+        ImageButton text_btn = (ImageButton)item.findViewById(R.id.contact_edit_txt_action);
+        text_btn.setTag(item);
+        text_btn.setOnClickListener(this);
+
+        ImageButton remove_btn = (ImageButton)item.findViewById(R.id.contact_edit_phone_delete);
+        remove_btn.setTag(item);
+        remove_btn.setOnClickListener(this);
+
+        phones.addView(item);
+    }
+
+    private void addViewForEmail() {
+        LinearLayout emails = (LinearLayout)findViewById(R.id.contact_edit_email_list);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View item = inflater.inflate(R.layout.contact_email_edit_item, emails, false);
+
+        ImageButton contact_btn = (ImageButton)item.findViewById(R.id.contact_edit_email_action);
+        contact_btn.setTag(item);
+        contact_btn.setOnClickListener(this);
+
+        ImageButton remove_btn = (ImageButton)item.findViewById(R.id.contact_edit_email_delete);
+        remove_btn.setTag(item);
+        remove_btn.setOnClickListener(this);
+
+        emails.addView(item);
     }
 }

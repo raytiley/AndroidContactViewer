@@ -10,21 +10,32 @@
         android:layout_margin="4dp"
         android:text="@string/phone" />
     
-    <ImageView
+    <ImageButton
         android:id="@+id/profile_phone_item_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/call_number"
-        android:src="@drawable/phone" />
+        android:scaleType="fitCenter"
+        android:background="@drawable/blank"
+        android:src="@drawable/contact_background" />
     
-    <ImageView
+    <ImageButton
         android:id="@+id/profile_phone_item_texting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/profile_phone_item_contact"
+        android:layout_toLeftOf="@+id/profile_phone_item_contact"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/text_number"
-        android:src="@drawable/texting" />
+        android:scaleType="fitCenter"
+        android:background="@drawable/blank"
+        android:src="@drawable/texting_background" />
     
+    <View
+        android:layout_height="1px"
+        android:layout_width="fill_parent"
+        android:background="@color/divider"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

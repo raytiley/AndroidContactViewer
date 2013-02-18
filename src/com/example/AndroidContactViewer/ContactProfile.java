@@ -2,6 +2,7 @@ package com.example.AndroidContactViewer;
 
 import java.util.List;
 
+import android.content.Intent;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 import android.app.Activity;
@@ -37,10 +38,9 @@ public class ContactProfile extends Activity {
 		button.setText("Edit");
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
-				Toast.makeText(
-						ContactProfile.this,
-						"Edit Profile Clicked.",
-						Toast.LENGTH_LONG).show();
+                Intent myIntent = new Intent(getBaseContext(), ContactEditActivity.class);
+                myIntent.putExtra("ContactID", contact.getContactId());
+                startActivity(myIntent);
 			}
 		});
 		

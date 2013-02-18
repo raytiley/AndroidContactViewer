@@ -33,6 +33,10 @@ public class ContactListActivity extends ListActivity {
 			}
 		});
 
+        //hide the left button since we aren't using it
+        button = toolbar.getToolbarLeftButton();
+        button.setVisibility(View.GONE);
+
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();

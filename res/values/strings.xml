@@ -16,5 +16,6 @@
     <string name="phone_numbers">Phone Numbers</string>
     <string name="call_number">Call Number</string>
     <string name="text_number">Text Number</string>
+    <string name="search_contacts">Search Contacts</string>
 
 </resources>

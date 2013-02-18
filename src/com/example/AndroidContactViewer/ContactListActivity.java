@@ -1,13 +1,25 @@
 package com.example.AndroidContactViewer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
@@ -20,7 +32,6 @@ public class ContactListActivity extends ListActivity {
 
 		setContentView(R.layout.contact_list);
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
-		toolbar.hideLeftButton();
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();
@@ -33,16 +44,28 @@ public class ContactListActivity extends ListActivity {
 						Toast.LENGTH_LONG).show();
 			}
 		});
-
-        //hide the left button since we aren't using it
-        button = toolbar.getToolbarLeftButton();
-        button.setVisibility(View.GONE);
+		
+		button = toolbar.getToolbarLeftButton();
+		button.setText("Search");
+		button.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				onSearchRequested();
+			}
+		});
+		
 
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
 		setListAdapter(new ContactAdapter(this, R.layout.contact_list_item, datasource.all()));
 		datasource.close();
+		
+		Intent intent = getIntent();
+		if(intent.getAction().equals(Intent.ACTION_SEARCH)){
+    		String query = intent.getStringExtra(SearchManager.QUERY);
+    		((ContactAdapter)getListAdapter()).getFilter().filter(query);
+    	}	
+		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

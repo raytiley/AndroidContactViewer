@@ -14,12 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
@@ -61,10 +56,11 @@ public class ContactListActivity extends ListActivity {
 		datasource.close();
 		
 		Intent intent = getIntent();
-		if(intent.getAction().equals(Intent.ACTION_SEARCH)){
+        String action = intent.getAction();
+		if(action != null && action.equals(Intent.ACTION_SEARCH)) {
     		String query = intent.getStringExtra(SearchManager.QUERY);
     		((ContactAdapter)getListAdapter()).getFilter().filter(query);
-    	}	
+        }
 		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);

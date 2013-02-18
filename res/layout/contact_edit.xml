@@ -50,6 +50,16 @@
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
         </LinearLayout>
+        <ImageButton
+                android:id="@+id/contact_edit_email_add"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:contentDescription="@string/email"
+                android:scaleType="fitCenter"
+                android:background="@drawable/blank"
+                android:src="@drawable/green_plus" />
 
         <TextView
                 android:layout_width="fill_parent"
@@ -61,6 +71,16 @@
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
         </LinearLayout>
+        <ImageButton
+                android:id="@+id/contact_edit_phone_add"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="right"
+                android:contentDescription="@string/email"
+                android:scaleType="fitCenter"
+                android:background="@drawable/blank"
+                android:src="@drawable/green_plus" />
 
     </LinearLayout>
 </ScrollView>

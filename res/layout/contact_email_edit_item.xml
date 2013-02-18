@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-
-    <EditText android:id="@+id/contact_edit_email_edit_text"
-              android:layout_width="225dp"
-              android:layout_height="wrap_content"
-              android:layout_margin="4dp"
-              android:text="@string/email" />
 
     <ImageButton
             android:id="@+id/contact_edit_email_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
             android:contentDescription="@string/email"
             android:scaleType="fitCenter"
             android:background="@drawable/blank"
             android:src="@drawable/email" />
 
-    <View
-            android:layout_height="1px"
-            android:layout_width="fill_parent"
-            android:background="@color/divider"
-            android:layout_alignParentBottom="true" />
+    <EditText android:id="@+id/contact_edit_email_edit_text"
+              android:layout_width="225dp"
+              android:layout_height="wrap_content"
+              android:layout_margin="4dp"
+              android:layout_marginLeft="10dp"
+              android:text="@string/email" />
+
+    <ImageButton
+            android:id="@+id/contact_edit_email_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/email"
+            android:scaleType="fitCenter"
+            android:background="@drawable/blank"
+            android:src="@drawable/red_minus" />
 
 
-</RelativeLayout>
+
+</LinearLayout>

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class ContactViewActivity extends Activity implements OnClickListener{
-	private Contact contact;
+	private Contact _contact;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,20 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 		ToolbarConfig toolbar = new ToolbarConfig(this, "Profile");
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
-		contact = datasource.get(contactID);
+		_contact = datasource.get(contactID);
+        _contact.addPhoneNumber("732-531-7175");
+        _contact.addPhoneNumber("207-775-2900");
+        _contact.addPhoneNumber("207-518-8612");
+        _contact.addPhoneNumber("732-531-1234");
+        _contact.addPhoneNumber("207-775-1234");
+        _contact.addPhoneNumber("207-518-1234");
+
+        _contact.addEmail("raytiley@gmail.com");
+        _contact.addEmail("ray@ctn5.org");
+        _contact.addEmail("ray.tiley@trms.com");
+        _contact.addEmail("raytiley@example.com");
+        _contact.addEmail("ray@example.com");
+        _contact.addEmail("ray.tiley@example.com");
 		datasource.close();
 
 		// setup the "Edit" button
@@ -35,12 +48,12 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 		button.setText("Back");
 		button.setOnClickListener(this);
 		
-		((TextView)findViewById(R.id.profile_name)).setText(contact.getName());
-		((TextView)findViewById(R.id.profile_title)).setText(contact.getTitle());
+		((TextView)findViewById(R.id.profile_name)).setText(_contact.getName());
+		((TextView)findViewById(R.id.profile_title)).setText(_contact.getTitle());
 		
 		// Add e-mails to view
 		
-		List<String> emailList = contact.getEmails();
+		List<String> emailList = _contact.getEmails();
 		
 		if (emailList.size() != 0) {
 			// Can't use a ListView for e-mails or phone lists since we want the entire
@@ -67,7 +80,7 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 		
 		// Add phones to view
 		
-		List<String> phoneList = contact.getPhoneNumbers();
+		List<String> phoneList = _contact.getPhoneNumbers();
 		
 		if (phoneList.size() != 0) {
 			LinearLayout phones = (LinearLayout)findViewById(R.id.profile_phone_list);
@@ -121,7 +134,7 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 				break;
 			case R.id.toolbar_right_button:
                 Intent myIntent = new Intent(getBaseContext(), ContactEditActivity.class);
-                myIntent.putExtra("ContactID", contact.getContactId());
+                myIntent.putExtra("ContactID", _contact.getContactId());
                 startActivity(myIntent);
 				break;
 			default:

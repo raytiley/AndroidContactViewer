@@ -1,61 +1,66 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical" >
 
-    <include layout="@layout/toolbar"
-             android:layout_weight="0"/>
-
-    <RelativeLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
-        <ImageView android:src="@drawable/profile_image"
-                   android:id="@+id/contact_image"
-                   android:contentDescription="@string/profile_image"
-                   android:layout_width="75dp"
-                   android:layout_height="75dp"
-                   android:layout_margin="10dp"
-                />
-        <EditText
-                android:id="@+id/edit_contact_name"
+            android:layout_height="fill_parent" >
+
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:orientation="vertical" >
+
+        <include layout="@layout/toolbar"
+                 android:layout_weight="0"/>
+
+        <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:layout_toRightOf="@id/contact_image"
-                android:layout_marginRight="5dp"/>
-        <EditText
-                android:id="@+id/edit_contact_title"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+            <ImageView android:src="@drawable/profile_image"
+                       android:id="@+id/contact_image"
+                       android:contentDescription="@string/profile_image"
+                       android:layout_width="75dp"
+                       android:layout_height="75dp"
+                       android:layout_margin="10dp"
+                    />
+            <EditText
+                    android:id="@+id/edit_contact_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name"
+                    android:layout_toRightOf="@id/contact_image"
+                    android:layout_marginRight="5dp"/>
+            <EditText
+                    android:id="@+id/edit_contact_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title"
+                    android:layout_toRightOf="@id/contact_image"
+                    android:layout_below="@id/edit_contact_name"
+                    android:layout_marginRight="5dp"/>
+        </RelativeLayout>
+
+        <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title"
-                android:layout_toRightOf="@id/contact_image"
-                android:layout_below="@id/edit_contact_name"
-                android:layout_marginRight="5dp"/>
-    </RelativeLayout>
+                android:text="@string/emails" />
 
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/emails" />
+        <LinearLayout android:id="@+id/contact_edit_email_list"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        </LinearLayout>
 
-    <ListView android:id="@+id/profile_email_list"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="0"	>
-    </ListView>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_numbers" />
 
-    <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/phone_numbers" />
+        <LinearLayout android:id="@+id/contact_edit_phone_list"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        </LinearLayout>
 
-    <ListView android:id="@+id/profile_phone_list"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="0"	>
-    </ListView>
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

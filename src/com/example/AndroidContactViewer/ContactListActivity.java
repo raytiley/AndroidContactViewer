@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 public class ContactListActivity extends ListActivity implements OnClickListener {
+	private boolean filtered = false;
     private ContactListActivity _activity = null;
     protected ContactAdapter contact_adapter;
 	@Override
@@ -138,6 +139,21 @@ public class ContactListActivity extends ListActivity implements OnClickListener
         // Return false so that Android doesn't try to run an actual search dialog.
         return false;
     }
+    
+    /* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+        if(filtered){
+        	ContactListActivity.this.contact_adapter.getFilter().filter("");
+        	EditText search_box = (EditText)findViewById(R.id.search_box);
+        	search_box.setText("");
+        	filtered = false;
+        } else{
+        	super.onBackPressed();        	
+        }
+	}
 
 	/*
 	 * We need to provide a custom adapter in order to use a custom list item

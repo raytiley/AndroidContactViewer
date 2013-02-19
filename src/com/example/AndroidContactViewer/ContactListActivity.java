@@ -41,14 +41,7 @@ public class ContactListActivity extends ListActivity {
 			}
 		});
 		
-		button = toolbar.getToolbarLeftButton();
-		button.setText("Search");
-		button.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				onSearchRequested();
-			}
-		});
-		
+		toolbar.hideLeftButton();
 
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
@@ -56,13 +49,6 @@ public class ContactListActivity extends ListActivity {
         contact_adapter = new ContactAdapter(this, R.layout.contact_list_item, datasource.all());
 		setListAdapter(contact_adapter);
 		datasource.close();
-		
-		Intent intent = getIntent();
-        String action = intent.getAction();
-		if(action != null && action.equals(Intent.ACTION_SEARCH)) {
-    		String query = intent.getStringExtra(SearchManager.QUERY);
-    		((ContactAdapter)getListAdapter()).getFilter().filter(query);
-        }
 		
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
@@ -162,5 +148,13 @@ public class ContactListActivity extends ListActivity {
 			return item;
 		}
 	}
-
+	
+	public boolean onSearchRequested() {
+		EditText search_box = (EditText)findViewById(R.id.search_box);
+		search_box.requestFocus();
+		
+		// Return false so that Android doesn't try to run an actual search dialog.
+		return false;
+	}
+	
 }

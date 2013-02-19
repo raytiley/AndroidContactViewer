@@ -11,9 +11,10 @@
               android:layout_gravity="center"
               android:layout_height="wrap_content"
               android:layout_width="fill_parent"
-              android:hint="Search Contacts..."
-              android:inputType="textVisiblePassword"
-              />
+              android:hint="@string/search_contacts"
+              android:inputType="textVisiblePassword" >
+	    <requestFocus />
+	</EditText>
 
 
     <ListView android:id="@android:id/list"

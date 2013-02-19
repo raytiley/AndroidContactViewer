@@ -124,8 +124,8 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	}
 
 	private Contact cursorToContact(Cursor cursor) {
-		Contact contact = new Contact((int) cursor.getLong(0),
-				cursor.getString(1));
+		Contact contact = new Contact(cursor.getInt(cursor.getColumnIndexOrThrow(MySQLiteHelper.COLUMN_ID)),
+				cursor.getString(cursor.getColumnIndexOrThrow(MySQLiteHelper.COLUMN_CONTACT_NAME)));
 		contact.setTitle(cursor.getString(2));
 		// contact.setDefaultTextPhone();
 		// contact.setDefaultContactPhone();

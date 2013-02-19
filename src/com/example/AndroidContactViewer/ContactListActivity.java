@@ -2,7 +2,6 @@ package com.example.AndroidContactViewer;
 
 import java.util.List;
 import android.app.ListActivity;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import android.view.View.OnClickListener;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
-public class ContactListActivity extends ListActivity {
+public class ContactListActivity extends ListActivity implements OnClickListener {
     private ContactListActivity _activity = null;
     protected ContactAdapter contact_adapter;
 	@Override
@@ -31,17 +31,12 @@ public class ContactListActivity extends ListActivity {
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();
-		button.setText("About");
-		button.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				Toast.makeText(
-						ContactListActivity.this,
-						"This is a sample application made for SENG 5199-1 in the MSSE program.",
-						Toast.LENGTH_LONG).show();
-			}
-		});
+		button.setText("New Contact");
+		button.setOnClickListener(this);
+
 		
 		toolbar.hideLeftButton();
+		
 
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
@@ -120,6 +115,29 @@ public class ContactListActivity extends ListActivity {
         this.openContextMenu(v);
 
 	}
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.toolbar_right_button:
+                Intent myIntent = new Intent(getBaseContext(), ContactEditActivity.class);
+                myIntent.putExtra("ContactID", 0);
+                startActivity(myIntent);
+                break;
+            default:
+                Toast.makeText(
+                        ContactListActivity.this,
+                        "Unknown click",
+                        Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public boolean onSearchRequested() {
+        EditText search_box = (EditText)findViewById(R.id.search_box);
+        search_box.requestFocus();
+
+        // Return false so that Android doesn't try to run an actual search dialog.
+        return false;
+    }
 
 	/*
 	 * We need to provide a custom adapter in order to use a custom list item
@@ -148,13 +166,4 @@ public class ContactListActivity extends ListActivity {
 			return item;
 		}
 	}
-	
-	public boolean onSearchRequested() {
-		EditText search_box = (EditText)findViewById(R.id.search_box);
-		search_box.requestFocus();
-		
-		// Return false so that Android doesn't try to run an actual search dialog.
-		return false;
-	}
-	
 }

@@ -31,7 +31,7 @@
               android:layout_width="175dp"
               android:layout_height="wrap_content"
               android:layout_margin="4dp"
-              android:text="@string/phone" />
+              android:hint="Phone" />
     <ImageButton
             android:id="@+id/contact_edit_phone_delete"
             android:layout_width="wrap_content"

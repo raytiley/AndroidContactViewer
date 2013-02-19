@@ -25,12 +25,15 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.contact_edit);
+        ToolbarConfig toolbar = new ToolbarConfig(this, "Edit Contact");
 
         int contactID = (Integer)getIntent().getExtras().get("ContactID");
-
-        ToolbarConfig toolbar = new ToolbarConfig(this, "Edit Contact");
+        if(contactID == 0) {
+            toolbar.getToolbarTitleView().setText("New Contact");
+            //Lets create a brand spaking new contact.
+            _contact = new Contact(0, "");
+        } else {
         ContactDataSource datasource = new ContactDataSource(this);
         datasource.open();
         _contact = datasource.get(contactID);
@@ -49,8 +52,8 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         _contact.addEmail("raytiley@example.com");
         _contact.addEmail("ray@example.com");
         _contact.addEmail("ray.tiley@example.com");
-
         datasource.close();
+        }
 
         // setup the "Edit" button
         Button button = toolbar.getToolbarRightButton();
@@ -88,9 +91,6 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
                 emails.addView(item);
             }
-        } else {
-            // If there are no e-mails associated with this contact, don't show the label
-            ((TextView)findViewById(R.id.profile_emails_label)).setVisibility(View.GONE);
         }
 
         // Add phones to view
@@ -119,9 +119,6 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
                 phones.addView(item);
             }
-        } else {
-            // If there are no phone numbers associated with this contact, don't show the label
-            ((TextView)findViewById(R.id.profile_phones_label)).setVisibility(View.GONE);
         }
 
         // Setup Add Buttons

@@ -2,6 +2,7 @@ package com.example.AndroidContactViewer;
 
 import java.util.List;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.widget.*;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 import android.app.Activity;
@@ -20,7 +21,9 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 		
 		int contactID = (Integer)getIntent().getExtras().get("ContactID");
 		
-		ToolbarConfig toolbar = new ToolbarConfig(this, "Profile");
+		Resources res = getResources();
+		
+		ToolbarConfig toolbar = new ToolbarConfig(this, res.getString(R.string.profile));
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
 		_contact = datasource.get(contactID);
@@ -41,11 +44,11 @@ public class ContactViewActivity extends Activity implements OnClickListener{
 
 		// setup the "Edit" button
 		Button button = toolbar.getToolbarRightButton();
-		button.setText("Edit");
+		button.setText(res.getString(R.string.edit));
 		button.setOnClickListener(this);
 		
 		button = toolbar.getToolbarLeftButton();
-		button.setText("Back");
+		button.setText(res.getString(R.string.back));
 		button.setOnClickListener(this);
 		
 		((TextView)findViewById(R.id.profile_name)).setText(_contact.getName());

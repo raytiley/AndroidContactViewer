@@ -4,6 +4,7 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,12 +28,13 @@ public class ContactListActivity extends ListActivity implements OnClickListener
 		super.onCreate(savedInstanceState);
         _activity = this;
 
+        Resources res = getResources();
 		setContentView(R.layout.contact_list);
-		ToolbarConfig toolbar = new ToolbarConfig(this, "Contacts");
+		ToolbarConfig toolbar = new ToolbarConfig(this, res.getString(R.string.contacts));
 
 		// setup the about button
 		Button button = toolbar.getToolbarRightButton();
-		button.setText("New Contact");
+		button.setText(res.getString(R.string.new_contact));
 		button.setOnClickListener(this);
 
 		

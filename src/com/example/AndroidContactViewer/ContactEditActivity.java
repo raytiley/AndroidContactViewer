@@ -3,6 +3,7 @@ package com.example.AndroidContactViewer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +25,17 @@ public class ContactEditActivity extends Activity implements OnClickListener {
     private Contact _contact;
 
     public void onCreate(Bundle savedInstanceState) {
+    	Resources res;
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_edit);
-        ToolbarConfig toolbar = new ToolbarConfig(this, "Edit Contact");
+        
+        res = getResources();
+        ToolbarConfig toolbar = new ToolbarConfig(this, res.getString(R.string.edit_contact));
 
         int contactID = (Integer)getIntent().getExtras().get("ContactID");
         if(contactID == 0) {
-            toolbar.getToolbarTitleView().setText("New Contact");
+            toolbar.getToolbarTitleView().setText(res.getString(R.string.new_contact));
             //Lets create a brand spaking new contact.
             _contact = new Contact(0, "");
         } else {

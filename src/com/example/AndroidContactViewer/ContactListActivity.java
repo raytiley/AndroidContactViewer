@@ -70,6 +70,7 @@ public class ContactListActivity extends ListActivity implements OnClickListener
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 ContactListActivity.this.contact_adapter.getFilter().filter(charSequence);
+                filtered = true;
             }
 
             @Override

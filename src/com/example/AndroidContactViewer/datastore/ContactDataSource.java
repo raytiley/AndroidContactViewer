@@ -127,6 +127,7 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		// Make sure to close the cursor
 		cursor.close();
 		return allContacts;
+
 	}
 	
 	@Override

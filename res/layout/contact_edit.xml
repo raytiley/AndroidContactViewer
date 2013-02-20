@@ -27,14 +27,14 @@
                     android:id="@+id/edit_contact_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
+                    android:hint="First Last"
                     android:layout_toRightOf="@id/contact_image"
                     android:layout_marginRight="5dp"/>
             <EditText
                     android:id="@+id/edit_contact_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/title"
+                    android:hint="Title"
                     android:layout_toRightOf="@id/contact_image"
                     android:layout_below="@id/edit_contact_name"
                     android:layout_marginRight="5dp"/>

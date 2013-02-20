@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Contact Viewer</string>
+    <string name="contact">Contact</string>
     <string name="contacts">Contacts</string>
     <string name="about">About</string>
     <string name="back">Back</string>
@@ -16,6 +17,10 @@
     <string name="phone_numbers">Phone Numbers</string>
     <string name="call_number">Call Number</string>
     <string name="text_number">Text Number</string>
-    <string name="search_contacts">Search Contacts</string>
+    <string name="search_contacts">Search Contacts...</string>
+    <string name="edit_contact">Edit Contact</string>
+    <string name="new_contact">New Contact</string>
+    <string name="profile">Profile</string>
+    <string name="edit">Edit</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.AndroidContactViewer;
 
 import java.util.List;
+
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -14,7 +15,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 

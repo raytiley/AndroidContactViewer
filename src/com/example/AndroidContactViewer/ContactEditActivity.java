@@ -34,22 +34,6 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         ContactDataSource datasource = new ContactDataSource(this);
         datasource.open();
         _contact = datasource.get(contactID);
-
-        //Just for shits and grins add a bunch of emails and phones since the DB doesn't seem to be holding them yet
-        _contact.addPhoneNumber("732-531-7175");
-        _contact.addPhoneNumber("207-775-2900");
-        _contact.addPhoneNumber("207-518-8612");
-        _contact.addPhoneNumber("732-531-1234");
-        _contact.addPhoneNumber("207-775-1234");
-        _contact.addPhoneNumber("207-518-1234");
-
-        _contact.addEmail("raytiley@gmail.com");
-        _contact.addEmail("ray@ctn5.org");
-        _contact.addEmail("ray.tiley@trms.com");
-        _contact.addEmail("raytiley@example.com");
-        _contact.addEmail("ray@example.com");
-        _contact.addEmail("ray.tiley@example.com");
-
         datasource.close();
 
         // setup the "Edit" button

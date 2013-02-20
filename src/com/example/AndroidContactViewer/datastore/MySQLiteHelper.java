@@ -34,7 +34,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ TABLE_CONTACTS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, "
 			+ COLUMN_CONTACT_NAME + " text not null, "
-			+ COLUMN_CONTACT_TITLE + ", "
+			+ COLUMN_CONTACT_TITLE + " text, "
 			+ COLUMN_CONTACT_DEFAULT_TEXT_PHONE_ID + " integer, "
 			+ COLUMN_CONTACT_DEFAULT_CONTACT_PHONE_ID + " integer, "
 			+ COLUMN_CONTACT_DEFAULT_EMAIL_ID + " integer, "

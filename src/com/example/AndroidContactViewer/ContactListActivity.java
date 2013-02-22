@@ -6,6 +6,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -109,21 +110,53 @@ public class ContactListActivity extends ListActivity implements
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
 				.getMenuInfo();
+		Contact contact = ((ContactAdapter) getListAdapter())
+				.getItem(info.position);
 		switch (item.getItemId()) {
 		case R.id.call:
-			Toast.makeText(this, "Call", 5).show();
+			if (contact.getDefaultContactPhone() != null &&
+			    !contact.getDefaultContactPhone().trim().equals("")) {
+				Intent callIntent = new Intent(Intent.ACTION_CALL);
+	            callIntent.setData(Uri.parse("tel:"+contact.getDefaultContactPhone()));
+	            startActivity(callIntent);
+			}
+            else {
+                // TODO : pop up menu of all phone numbers
+                Toast.makeText(this, "No default phone number set", 5).show();
+            }
 			return true;
 		case R.id.message:
-			Toast.makeText(this, "Message", 5).show();
+			if (contact.getDefaultTextPhone() != null &&
+		        !contact.getDefaultTextPhone().trim().equals("")) {
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.addCategory(Intent.CATEGORY_DEFAULT);
+				intent.setType("vnd.android-dir/mms-sms");
+				intent.putExtra("address", contact.getDefaultTextPhone());
+				startActivity(intent);
+			}
+	        else {
+                // TODO : pop up menu of all phone numbers
+                Toast.makeText(this, "No default phone number set", 5).show();
+	        }
 			return true;
 		case R.id.email:
-			Toast.makeText(this, "email", 5).show();
+			if (contact.getDefaultEmail() != null &&
+	            !contact.getDefaultEmail().trim().equals("")) {
+
+				Intent intent = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_EMAIL, contact.getDefaultEmail());
+				startActivity(Intent.createChooser(intent, "Send Email"));
+			}
+	        else {
+                // TODO : pop up menu of all emails
+                Toast.makeText(this, "No default email set", 5).show();
+	        }
 			return true;
 		case R.id.profile:
 			Intent myIntent = new Intent(getBaseContext(),
 					ContactViewActivity.class);
-			myIntent.putExtra("ContactID", ((ContactAdapter) getListAdapter())
-					.getItem(info.position).getContactId());
+			myIntent.putExtra("ContactID", contact.getContactId());
 			startActivity(myIntent);
 			return true;
 		default:

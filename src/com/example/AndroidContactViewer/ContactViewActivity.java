@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.widget.*;
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,21 +114,28 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
+		Intent intent;
 		switch (v.getId()) {
 		case R.id.profile_email_item_image:
 			String email = (String) v.getTag();
-			Toast.makeText(ContactViewActivity.this,
-					"E-mailing address " + email, Toast.LENGTH_SHORT).show();
+			intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("message/rfc822");
+			intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+			startActivity(Intent.createChooser(intent, "Send Email"));
 			break;
 		case R.id.profile_phone_item_contact:
 			String phone = (String) v.getTag();
-			Toast.makeText(ContactViewActivity.this, "Calling phone " + phone,
-					Toast.LENGTH_SHORT).show();
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:"+phone));
+            startActivity(callIntent);
 			break;
 		case R.id.profile_phone_item_texting:
 			String txt = (String) v.getTag();
-			Toast.makeText(ContactViewActivity.this, "Texting phone " + txt,
-					Toast.LENGTH_SHORT).show();
+			intent = new Intent(Intent.ACTION_VIEW);
+			intent.addCategory(Intent.CATEGORY_DEFAULT);
+			intent.setType("vnd.android-dir/mms-sms");
+			intent.putExtra("address", txt);
+			startActivity(intent);
 			break;
 		case R.id.toolbar_left_button:
 			finish();

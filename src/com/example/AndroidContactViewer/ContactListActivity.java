@@ -142,10 +142,9 @@ public class ContactListActivity extends ListActivity implements
 		case R.id.email:
 			if (contact.getDefaultEmail() != null &&
 	            !contact.getDefaultEmail().trim().equals("")) {
-
 				Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_EMAIL, contact.getDefaultEmail());
+				intent.setType("message/rfc822");
+				intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getDefaultEmail()});
 				startActivity(Intent.createChooser(intent, "Send Email"));
 			}
 	        else {

@@ -1,16 +1,22 @@
 package com.example.AndroidContactViewer;
 
 import java.util.List;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.widget.*;
-import com.example.AndroidContactViewer.datastore.ContactDataSource;
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
 public class ContactViewActivity extends Activity implements OnClickListener {
 	private Contact _contact;
@@ -67,6 +73,9 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 
 				ImageButton email_btn = (ImageButton) item
 						.findViewById(R.id.profile_email_item_image);
+				if (email.equals(_contact.getDefaultEmail())) {
+					email_btn.setImageResource(R.drawable.email_selected);
+				}
 				email_btn.setTag(email);
 				email_btn.setOnClickListener(this);
 
@@ -95,11 +104,17 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 
 				ImageButton contact_btn = (ImageButton) item
 						.findViewById(R.id.profile_phone_item_contact);
+				if (phone.equals(_contact.getDefaultContactPhone())) {
+					contact_btn.setImageResource(R.drawable.phone_selected);
+				}
 				contact_btn.setTag(phone);
 				contact_btn.setOnClickListener(this);
 
 				ImageButton text_btn = (ImageButton) item
 						.findViewById(R.id.profile_phone_item_texting);
+				if (phone.equals(_contact.getDefaultTextPhone())) {
+					text_btn.setImageResource(R.drawable.texting_selected);
+				}
 				text_btn.setTag(phone);
 				text_btn.setOnClickListener(this);
 

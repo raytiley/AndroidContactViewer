@@ -23,6 +23,9 @@ import com.example.AndroidContactViewer.datastore.ContactDataSource;
 public class ContactEditActivity extends Activity implements OnClickListener {
 
 	private Contact _contact;
+	private ImageButton _defaultPhoneButton;
+	private ImageButton _defaultTextButton;
+	private ImageButton _defaultEmailButton;
 
 	public void onCreate(Bundle savedInstanceState) {
 		Resources res;
@@ -81,6 +84,10 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 				ImageButton email_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_email_action);
+				if (email.equals(_contact.getDefaultTextPhone())) {
+					email_btn.setImageResource(R.drawable.email_selected);
+					_defaultEmailButton = email_btn;
+				}
 				email_btn.setTag(item);
 				email_btn.setOnClickListener(this);
 
@@ -110,11 +117,19 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 				ImageButton contact_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_call_action);
+				if (phone.equals(_contact.getDefaultContactPhone())) {
+					contact_btn.setImageResource(R.drawable.phone_selected);
+					_defaultPhoneButton = contact_btn;
+				}
 				contact_btn.setTag(item);
 				contact_btn.setOnClickListener(this);
 
 				ImageButton text_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_txt_action);
+				if (phone.equals(_contact.getDefaultTextPhone())) {
+					text_btn.setImageResource(R.drawable.texting_selected);
+					_defaultTextButton = text_btn;
+				}
 				text_btn.setTag(item);
 				text_btn.setOnClickListener(this);
 
@@ -158,19 +173,31 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.contact_edit_txt_action:
-			Toast.makeText(ContactEditActivity.this,
-					"Set default for txt messages to: " + text,
-					Toast.LENGTH_SHORT).show();
+			// TODO : set default text number on contact
+			
+			if (_defaultTextButton != null) {
+				_defaultTextButton.setImageResource(R.drawable.texting);
+			}
+			_defaultTextButton = (ImageButton)view.findViewById(R.id.contact_edit_txt_action);
+			_defaultTextButton.setImageResource(R.drawable.texting_selected);
 			break;
 		case R.id.contact_edit_call_action:
-			Toast.makeText(ContactEditActivity.this,
-					"Set default for calling to: " + text, Toast.LENGTH_SHORT)
-					.show();
+			// TODO : set default call number on contact
+			
+			if (_defaultPhoneButton != null) {
+				_defaultPhoneButton.setImageResource(R.drawable.phone);
+			}
+			_defaultPhoneButton = (ImageButton)view.findViewById(R.id.contact_edit_call_action);
+			_defaultPhoneButton.setImageResource(R.drawable.phone_selected);
 			break;
 		case R.id.contact_edit_email_action:
-			Toast.makeText(ContactEditActivity.this,
-					"Set default for emailing to: " + text, Toast.LENGTH_SHORT)
-					.show();
+			// TODO : set default email on contact
+			
+			if (_defaultEmailButton != null) {
+				_defaultEmailButton.setImageResource(R.drawable.email);
+			}
+			_defaultEmailButton = (ImageButton)view.findViewById(R.id.contact_edit_email_action);
+			_defaultEmailButton.setImageResource(R.drawable.email_selected);
 			break;
 		case R.id.toolbar_left_button:
 			finish();

@@ -54,6 +54,15 @@ public class ContactDataSource implements ContactRepositoryInterface {
 					.setDefaultContactPhone("612-555-5678")
 					.setDefaultTextPhone("612-555-5678")
 					.setTwitterId("zoewashburne"));
+			Contact steve = new Contact(9, "Steven McAdams")
+					.setDefaultEmail("steven.mcadams@lmco.com")
+					.setTitle("Steve")
+					.setDefaultContactPhone("123-456-9874")
+					.setDefaultTextPhone("321-654-6541");
+			steve.addEmail("smcadams86@gmail.com");
+			steve.addPhoneNumber("645-612-6548");
+			_contacts.add(steve);
+
 			_contacts.add(new Contact(2, "Hoban Washburne")
 					.setDefaultEmail("wash@serenity.com").setTitle("Pilot")
 					.setDefaultContactPhone("612-555-9012")
@@ -88,15 +97,6 @@ public class ContactDataSource implements ContactRepositoryInterface {
 					.setDefaultTextPhone("612-555-2109")
 					.setTwitterId("shepherdbook"));
 			_contacts.add(new Contact(8, "Basic Contact"));
-			
-			Contact steve = new Contact(9, "Steven McADams")
-				.setDefaultEmail("steven.mcadams@lmco.com")
-				.setTitle("Steve")
-				.setDefaultContactPhone("123-456-9874")
-				.setDefaultTextPhone("321-654-6541");
-			steve.addEmail("smcadams86@gmail.com");
-			steve.addPhoneNumber("645-612-6548");
-			_contacts.add(steve);
 
 			for (Contact c : _contacts) {
 				add(c);
@@ -203,9 +203,18 @@ public class ContactDataSource implements ContactRepositoryInterface {
 				(int) cursor.getLong(cursor.getColumnIndex(MySQLiteHelper.COLUMN_ID)),
 				cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_NAME)));
 		contact.setTitle(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_TITLE)));
-		contact.setDefaultContactPhone(getDefaultPhone(contact.getContactId()));
-		contact.setDefaultEmail(getDefaultEmail(contact.getContactId()));
-		contact.setDefaultTextPhone(getDefaultText(contact.getContactId()));
+		String defaultPhone = getDefaultPhone(contact.getContactId());
+		if (defaultPhone != null && !"".equals(defaultPhone.trim())) {
+			contact.setDefaultContactPhone(defaultPhone);
+		}
+		String defaultEmail = getDefaultEmail(contact.getContactId());
+		if (defaultEmail != null && !"".equals(defaultEmail.trim())) {
+			contact.setDefaultEmail(defaultEmail);
+		}
+		String defaultText = getDefaultText(contact.getContactId());
+		if (defaultText != null && !"".equals(defaultText.trim())) {
+			contact.setDefaultTextPhone(defaultText);
+		}
 		contact.setTwitterId(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_TWITTER_ID)));
 		
 		for (String email : getContactEmails(contact.getContactId())) {
@@ -278,6 +287,7 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	private void addAllEmailsForContact(long contactId, List<String> emails) {
 		for (String email : emails) {
 			if (email != null && !"".equals(email.trim()) && !emailExists(contactId, email)) {
+				Log.i("smcad", "Adding : [" + email + "] to Contact [" + contactId + "]");
 				ContentValues values = new ContentValues();
 				values.put(MySQLiteHelper.COLUMN_EMAIL_ADDRESS, email);
 				values.put(MySQLiteHelper.COLUMN_EMAIL_PARENT_ID, contactId);
@@ -287,14 +297,18 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	}
 	
 	private void setDefaultEmail(long contactId, String email) {
+		Log.i("smcad", "setDefaultEmail : ["+email+"] for contact [" + contactId + "]");
 		if (email != null && !"".equals(email.trim()) && emailExists(contactId, email)) {
-			String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId + ")";
-			Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, DatabaseUtils.sqlEscapeString(where), null, null, null, null);
+			Log.i("smcad", "searching for email [" + email + "]");
+			String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId;
+			Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, where, null, null, null, null);
 			cursor.moveToFirst();
 			if (cursor.getCount() > 0) {
 				int email_id = cursor.getInt(cursor.getColumnIndex(MySQLiteHelper.COLUMN_EMAIL_ID));
 				ContentValues values = new ContentValues();
 				values.put(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_EMAIL_ID, email_id);
+				
+				Log.i("smcad", "setting default email table id [" + email_id + "] for contact [" + contactId + "]");
 				database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contactId, null);	
 			}
 			cursor.close();

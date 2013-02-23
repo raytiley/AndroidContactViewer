@@ -84,7 +84,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 				ImageButton email_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_email_action);
-				if (email.equals(_contact.getDefaultTextPhone())) {
+				if (email.equals(_contact.getDefaultEmail())) {
 					email_btn.setImageResource(R.drawable.email_selected);
 					_defaultEmailButton = email_btn;
 				}

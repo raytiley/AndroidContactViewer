@@ -85,7 +85,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 				ImageButton email_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_email_action);
 				if (email.equals(_contact.getDefaultEmail())) {
-					email_btn.setImageResource(R.drawable.email_selected);
+					email_btn.setImageResource(R.drawable.email_selected_transparent);
 					_defaultEmailButton = email_btn;
 				}
 				email_btn.setTag(item);
@@ -118,7 +118,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 				ImageButton contact_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_call_action);
 				if (phone.equals(_contact.getDefaultContactPhone())) {
-					contact_btn.setImageResource(R.drawable.phone_selected);
+					contact_btn.setImageResource(R.drawable.phone_selected_transparent);
 					_defaultPhoneButton = contact_btn;
 				}
 				contact_btn.setTag(item);
@@ -127,7 +127,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 				ImageButton text_btn = (ImageButton) item
 						.findViewById(R.id.contact_edit_txt_action);
 				if (phone.equals(_contact.getDefaultTextPhone())) {
-					text_btn.setImageResource(R.drawable.texting_selected);
+					text_btn.setImageResource(R.drawable.texting_selected_transparent);
 					_defaultTextButton = text_btn;
 				}
 				text_btn.setTag(item);
@@ -176,28 +176,28 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 			// TODO : set default text number on contact
 			
 			if (_defaultTextButton != null) {
-				_defaultTextButton.setImageResource(R.drawable.texting);
+				_defaultTextButton.setImageResource(R.drawable.texting_transparent);
 			}
 			_defaultTextButton = (ImageButton)view.findViewById(R.id.contact_edit_txt_action);
-			_defaultTextButton.setImageResource(R.drawable.texting_selected);
+			_defaultTextButton.setImageResource(R.drawable.texting_selected_transparent);
 			break;
 		case R.id.contact_edit_call_action:
 			// TODO : set default call number on contact
 			
 			if (_defaultPhoneButton != null) {
-				_defaultPhoneButton.setImageResource(R.drawable.phone);
+				_defaultPhoneButton.setImageResource(R.drawable.phone_transparent);
 			}
 			_defaultPhoneButton = (ImageButton)view.findViewById(R.id.contact_edit_call_action);
-			_defaultPhoneButton.setImageResource(R.drawable.phone_selected);
+			_defaultPhoneButton.setImageResource(R.drawable.phone_selected_transparent);
 			break;
 		case R.id.contact_edit_email_action:
 			// TODO : set default email on contact
 			
 			if (_defaultEmailButton != null) {
-				_defaultEmailButton.setImageResource(R.drawable.email);
+				_defaultEmailButton.setImageResource(R.drawable.email_transparent);
 			}
 			_defaultEmailButton = (ImageButton)view.findViewById(R.id.contact_edit_email_action);
-			_defaultEmailButton.setImageResource(R.drawable.email_selected);
+			_defaultEmailButton.setImageResource(R.drawable.email_selected_transparent);
 			break;
 		case R.id.toolbar_left_button:
 			finish();

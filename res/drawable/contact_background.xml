@@ -2,12 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item 
-         android:drawable="@drawable/phone_selected"
+         android:drawable="@drawable/phone_selected_transparent"
          android:state_pressed="true" />
     <item 
-         android:drawable="@drawable/phone_focused"
+         android:drawable="@drawable/phone_focused_transparent"
          android:state_focused="true" />
     <item 
-         android:drawable="@drawable/phone" />
+         android:drawable="@drawable/phone_transparent" />
 
 </selector>

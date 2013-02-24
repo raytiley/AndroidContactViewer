@@ -74,7 +74,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 				ImageButton email_btn = (ImageButton) item
 						.findViewById(R.id.profile_email_item_image);
 				if (email.equals(_contact.getDefaultEmail())) {
-					email_btn.setImageResource(R.drawable.email_selected);
+					email_btn.setImageResource(R.drawable.email_selected_transparent);
 				}
 				email_btn.setTag(email);
 				email_btn.setOnClickListener(this);
@@ -105,7 +105,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 				ImageButton contact_btn = (ImageButton) item
 						.findViewById(R.id.profile_phone_item_contact);
 				if (phone.equals(_contact.getDefaultContactPhone())) {
-					contact_btn.setImageResource(R.drawable.phone_selected);
+					contact_btn.setImageResource(R.drawable.phone_selected_transparent);
 				}
 				contact_btn.setTag(phone);
 				contact_btn.setOnClickListener(this);
@@ -113,7 +113,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 				ImageButton text_btn = (ImageButton) item
 						.findViewById(R.id.profile_phone_item_texting);
 				if (phone.equals(_contact.getDefaultTextPhone())) {
-					text_btn.setImageResource(R.drawable.texting_selected);
+					text_btn.setImageResource(R.drawable.texting_selected_transparent);
 				}
 				text_btn.setTag(phone);
 				text_btn.setOnClickListener(this);

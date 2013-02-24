@@ -2,12 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item 
-         android:drawable="@drawable/email_selected"
+         android:drawable="@drawable/email_selected_transparent"
          android:state_pressed="true" />
     <item 
-         android:drawable="@drawable/email_focused"
+         android:drawable="@drawable/email_focused_transparent"
          android:state_focused="true" />
     <item 
-         android:drawable="@drawable/email" />
+         android:drawable="@drawable/email_transparent" />
 
 </selector>

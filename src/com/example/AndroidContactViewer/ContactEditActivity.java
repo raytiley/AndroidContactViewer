@@ -1,20 +1,26 @@
 package com.example.AndroidContactViewer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 
 /**
  * Created with IntelliJ IDEA. User: raytiley Date: 2/17/13 Time: 6:12 PM To
@@ -56,6 +62,23 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 			_contact = datasource.get(contactID);
 			datasource.close();
 		}
+
+        //Check if we have gravatar on disk
+        String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
+        try
+        {
+            File imgFile = getFileStreamPath(filename);
+            if(imgFile.exists())
+            {
+                ImageView iv = (ImageView) findViewById(R.id.contact_image);
+                Bitmap gravatar = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                iv.setImageBitmap(gravatar);
+            }
+        }
+        catch(Exception e)
+        {
+            Log.e("gravatar", e.getMessage());
+        }
 
 		// setup the "Edit" button
 		Button button = toolbar.getToolbarRightButton();
@@ -315,6 +338,28 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         _contact.setDefaultContactPhone(_defaultCallPhone);
         _contact.setDefaultTextPhone(_defaultMessagePhone);
         _contact.setDefaultEmail(_defaultEmail);
+
+        // Try to get gravatar
+        try {
+            String email = _contact.getDefaultEmail() == null ? _contact.getName() : _contact.getDefaultEmail().toLowerCase();
+            String gravatar = MD5Util.md5Hex(email);
+            URL url = new URL("http://www.gravatar.com/avatar/" + gravatar + "?d=retro");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
+            FileOutputStream output = this.openFileOutput(filename, Context.MODE_PRIVATE);
+
+            int read;
+            byte[] data = new byte[1024];
+            while((read = is.read(data)) != -1)
+                output.write(data, 0, read);
+        }
+        catch (Exception e)
+        {
+            Log.e("gravatar", e.getMessage());
+            // Should probably do something with exception?
+        }
 
         ContactDataSource datasource = new ContactDataSource(this);
         datasource.open();

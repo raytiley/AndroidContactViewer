@@ -1,5 +1,6 @@
 package com.example.AndroidContactViewer;
 
+import java.io.File;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -8,10 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,13 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
@@ -264,6 +262,23 @@ public class ContactListActivity extends ListActivity implements
 					.getTitle());
 			((TextView) item.findViewById(R.id.item_phone)).setText(contact
 					.getDefaultContactPhone());
+
+            //Check if we have gravatar on disk
+            String filename = Integer.toString(contact.getId()) + "-gravatar.jpg";
+            try
+            {
+                File imgFile = getFileStreamPath(filename);
+                if(imgFile.exists())
+                {
+                    ImageView iv = (ImageView) item.findViewById(R.id.item_profile_image);
+                    Bitmap gravatar = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    iv.setImageBitmap(gravatar);
+                }
+            }
+            catch(Exception e)
+            {
+                Log.e("gravatar", e.getMessage());
+            }
 
 			return item;
 		}

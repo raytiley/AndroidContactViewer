@@ -1,20 +1,21 @@
 package com.example.AndroidContactViewer;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
 
@@ -105,6 +106,24 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 	}
 
     private void setupEmailsAndPhones() {
+
+        //Check if we have gravatar on disk
+        String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
+        try
+        {
+            File imgFile = getFileStreamPath(filename);
+            if(imgFile.exists())
+            {
+                 ImageView iv = (ImageView) findViewById(R.id.profile_image);
+                Bitmap gravatar = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                iv.setImageBitmap(gravatar);
+            }
+        }
+        catch(Exception e)
+        {
+            Log.e("gravatar", e.getMessage());
+        }
+
 
         ((TextView) findViewById(R.id.profile_name))
                 .setText(_contact.getName());

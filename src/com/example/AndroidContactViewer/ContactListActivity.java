@@ -2,8 +2,10 @@ package com.example.AndroidContactViewer;
 
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -30,13 +32,11 @@ import com.example.AndroidContactViewer.datastore.ContactDataSource;
 public class ContactListActivity extends ListActivity implements
 		OnClickListener {
 	private boolean filtered = false;
-	private ContactListActivity _activity = null;
 	protected ContactAdapter contact_adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		_activity = this;
 
 		Resources res = getResources();
 		setContentView(R.layout.contact_list);
@@ -60,14 +60,6 @@ public class ContactListActivity extends ListActivity implements
 
 		ListView lv = getListView();
 		lv.setTextFilterEnabled(true);
-		lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapterView,
-					View view, int i, long l) {
-				_activity.closeContextMenu();
-				return false;
-			}
-		});
 
 		// setup context menu
 		registerForContextMenu(lv);
@@ -98,12 +90,25 @@ public class ContactListActivity extends ListActivity implements
 		});
 	}
 
-	@Override
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.contact_adapter.clear();
+        ContactDataSource datasource = new ContactDataSource(this);
+        datasource.open();
+        for(Contact c : datasource.all()) {
+            this.contact_adapter.add(c);
+        }
+       datasource.close();
+       this.contact_adapter.notifyDataSetChanged();
+    }
+
+    @Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenu.ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.action_menu, menu);
+        inflater.inflate(R.menu.contact_long_hold_menu, menu);
 	}
 
 	@Override
@@ -113,62 +118,85 @@ public class ContactListActivity extends ListActivity implements
 		Contact contact = ((ContactAdapter) getListAdapter())
 				.getItem(info.position);
 		switch (item.getItemId()) {
-		case R.id.call:
-			if (contact.getDefaultContactPhone() != null &&
-			    !contact.getDefaultContactPhone().trim().equals("")) {
-				Intent callIntent = new Intent(Intent.ACTION_CALL);
-	            callIntent.setData(Uri.parse("tel:"+contact.getDefaultContactPhone()));
-	            startActivity(callIntent);
-			}
-            else {
-                // TODO : pop up menu of all phone numbers
-                Toast.makeText(this, "No default phone number set", 5).show();
-            }
-			return true;
-		case R.id.message:
-			if (contact.getDefaultTextPhone() != null &&
-		        !contact.getDefaultTextPhone().trim().equals("")) {
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.addCategory(Intent.CATEGORY_DEFAULT);
-				intent.setType("vnd.android-dir/mms-sms");
-				intent.putExtra("address", contact.getDefaultTextPhone());
-				startActivity(intent);
-			}
-	        else {
-                // TODO : pop up menu of all phone numbers
-                Toast.makeText(this, "No default phone number set", 5).show();
-	        }
-			return true;
-		case R.id.email:
-			if (contact.getDefaultEmail() != null &&
-	            !contact.getDefaultEmail().trim().equals("")) {
-				Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.setType("message/rfc822");
-				intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getDefaultEmail()});
-				startActivity(Intent.createChooser(intent, "Send Email"));
-			}
-	        else {
-                // TODO : pop up menu of all emails
-                Toast.makeText(this, "No default email set", 5).show();
-	        }
-			return true;
-		case R.id.profile:
-			Intent myIntent = new Intent(getBaseContext(),
-					ContactViewActivity.class);
-			myIntent.putExtra("ContactID", contact.getContactId());
-			startActivity(myIntent);
-			return true;
-		default:
-			return super.onContextItemSelected(item);
+            case R.id.profile:
+                Intent profileIntent = new Intent(getBaseContext(),
+                        ContactViewActivity.class);
+                profileIntent.putExtra("ContactID", contact.getContactId());
+                startActivity(profileIntent);
+                return true;
+            case R.id.edit:
+                Intent editIntent = new Intent(getBaseContext(),
+                        ContactEditActivity.class);
+                editIntent.putExtra("ContactID", contact.getContactId());
+                startActivity(editIntent);
+                return true;
+            case R.id.delete:
+                //TODO Maybe a confermation???
+                ContactDataSource datasource = new ContactDataSource(this);
+                this.contact_adapter.remove(contact);
+                datasource.open();
+                datasource.delete(contact);
+                datasource.close();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
 		}
 	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+        final int pos = position;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Action")
+                .setItems(new String[]{"Call", "Text", "Email"}, new DialogInterface.OnClickListener() {
 
-		this.openContextMenu(v);
+            public void onClick(DialogInterface dialog, int which) {
+                Contact contact = ((ContactAdapter) getListAdapter()).getItem(pos);
+                switch(which) {
+                    case 0:
+                        if (contact.getDefaultContactPhone() != null &&
+                                !contact.getDefaultContactPhone().trim().equals("")) {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                            callIntent.setData(Uri.parse("tel:"+contact.getDefaultContactPhone()));
+                            startActivity(callIntent);
+                        }
+                        else {
+                            // TODO : pop up menu of all phone numbers
+                            Toast.makeText(ContactListActivity.this, "No default phone number set", 5).show();
+                        }
+                        break;
+                    case 1:
+                        if (contact.getDefaultTextPhone() != null &&
+                                !contact.getDefaultTextPhone().trim().equals("")) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                            intent.setType("vnd.android-dir/mms-sms");
+                            intent.putExtra("address", contact.getDefaultTextPhone());
+                            startActivity(intent);
+                        }
+                        else {
+                            // TODO : pop up menu of all phone numbers
+                            Toast.makeText(ContactListActivity.this, "No default phone number set", 5).show();
+                        }
+                        break;
+                    case 2:
+                        if (contact.getDefaultEmail() != null &&
+                                !contact.getDefaultEmail().trim().equals("")) {
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("message/rfc822");
+                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{contact.getDefaultEmail()});
+                            startActivity(Intent.createChooser(intent, "Send Email"));
+                        }
+                        else {
+                            // TODO : pop up menu of all emails
+                            Toast.makeText(ContactListActivity.this, "No default email set", 5).show();
+                        }
+                        break;
+                }
+            }
+        });
 
+        builder.create().show();
 	}
 
 	public void onClick(View v) {

@@ -27,6 +27,10 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 	private ImageButton _defaultTextButton;
 	private ImageButton _defaultEmailButton;
 
+    private String _defaultCallPhone;
+    private String _defaultMessagePhone;
+    private String _defaultEmail;
+
 	public void onCreate(Bundle savedInstanceState) {
 		Resources res;
 
@@ -41,8 +45,11 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		if (contactID == 0) {
 			toolbar.getToolbarTitleView().setText(
 					res.getString(R.string.new_contact));
-			// Lets create a brand spaking new contact.
+			// Lets create a brand spanking new contact.
 			_contact = new Contact(0, "");
+            _defaultMessagePhone = "";
+            _defaultCallPhone = "";
+            _defaultEmail = "";
 		} else {
 			ContactDataSource datasource = new ContactDataSource(this);
 			datasource.open();
@@ -55,14 +62,16 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		button.setText("Save");
 		button.setOnClickListener(this);
 
-		button = toolbar.getToolbarLeftButton();
-		button.setText("Back");
-		button.setOnClickListener(this);
+		toolbar.hideLeftButton();
 
 		((EditText) findViewById(R.id.edit_contact_name)).setText(_contact
 				.getName());
 		((EditText) findViewById(R.id.edit_contact_title)).setText(_contact
 				.getTitle());
+
+        _defaultEmail = _contact.getDefaultEmail() == null ? "" : _contact.getDefaultEmail();
+        _defaultCallPhone = _contact.getDefaultContactPhone() == null ? "" : _contact.getDefaultContactPhone();
+        _defaultMessagePhone = _contact.getDefaultTextPhone() == null ? "" : _contact.getDefaultTextPhone();
 
 		List<String> emailList = _contact.getEmails();
 		LinearLayout emails = (LinearLayout) findViewById(R.id.contact_edit_email_list);
@@ -173,8 +182,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.contact_edit_txt_action:
-			// TODO : set default text number on contact
-			
+			_defaultMessagePhone = text;
 			if (_defaultTextButton != null) {
 				_defaultTextButton.setImageResource(R.drawable.texting_transparent);
 			}
@@ -182,8 +190,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 			_defaultTextButton.setImageResource(R.drawable.texting_selected_transparent);
 			break;
 		case R.id.contact_edit_call_action:
-			// TODO : set default call number on contact
-			
+			_defaultCallPhone = text;
 			if (_defaultPhoneButton != null) {
 				_defaultPhoneButton.setImageResource(R.drawable.phone_transparent);
 			}
@@ -191,7 +198,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 			_defaultPhoneButton.setImageResource(R.drawable.phone_selected_transparent);
 			break;
 		case R.id.contact_edit_email_action:
-			// TODO : set default email on contact
+			_defaultEmail = text;
 			
 			if (_defaultEmailButton != null) {
 				_defaultEmailButton.setImageResource(R.drawable.email_transparent);
@@ -205,6 +212,9 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		case R.id.toolbar_right_button:
 			Toast.makeText(ContactEditActivity.this, "Saving Contact",
 					Toast.LENGTH_SHORT).show();
+
+            saveContact();
+            finish();
 			break;
 		case R.id.contact_edit_phone_delete:
 			Toast.makeText(ContactEditActivity.this, "Remove phone: " + text,
@@ -276,4 +286,44 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
 		emails.addView(item);
 	}
+
+    private void saveContact() {
+        String name = ((EditText)findViewById(R.id.edit_contact_name)).getText().toString();
+        _contact.setName(name);
+
+        String title = ((EditText) findViewById(R.id.edit_contact_title)).getText().toString();
+        _contact.setTitle(title);
+
+        // Because views are added and removed we need to make the contact reflect the current UI
+        _contact.clearEmailsAndPhones();
+
+        //Set all emails
+        LinearLayout emails = (LinearLayout) findViewById(R.id.contact_edit_email_list);
+        for (int i = 0; i < emails.getChildCount(); i++) {
+            LinearLayout email = (LinearLayout)emails.getChildAt(i);
+            EditText text = (EditText)email.findViewById(R.id.contact_edit_email_edit_text);
+            _contact.addEmail(text.getText().toString());
+        }
+
+        LinearLayout phones = (LinearLayout) findViewById(R.id.contact_edit_phone_list);
+        for (int i = 0; i < phones.getChildCount(); i++) {
+            LinearLayout phone = (LinearLayout)phones.getChildAt(i);
+            EditText text = (EditText)phone.findViewById(R.id.contact_edit_phone_edit_text);
+            _contact.addPhoneNumber(text.getText().toString());
+        }
+
+        _contact.setDefaultContactPhone(_defaultCallPhone);
+        _contact.setDefaultTextPhone(_defaultMessagePhone);
+        _contact.setDefaultEmail(_defaultEmail);
+
+        ContactDataSource datasource = new ContactDataSource(this);
+        datasource.open();
+        if(_contact.getId() > 0) {
+            datasource.update(_contact);
+        }
+        else {
+            datasource.add(_contact);
+        }
+        datasource.close();
+    }
 }

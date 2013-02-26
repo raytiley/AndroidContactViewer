@@ -275,4 +275,9 @@ public class Contact {
 		}
 		return false;
 	}
+
+    public void clearEmailsAndPhones() {
+        this._emails.clear();
+        this._phones.clear();
+    }
 }

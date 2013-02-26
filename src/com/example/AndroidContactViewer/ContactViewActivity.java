@@ -42,93 +42,28 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 		button.setText(res.getString(R.string.edit));
 		button.setOnClickListener(this);
 
-		button = toolbar.getToolbarLeftButton();
-		button.setText(res.getString(R.string.back));
-		button.setOnClickListener(this);
+		toolbar.hideLeftButton();
 
-		((TextView) findViewById(R.id.profile_name))
-				.setText(_contact.getName());
-		((TextView) findViewById(R.id.profile_title)).setText(_contact
-				.getTitle());
 
-		// Add e-mails to view
 
-		List<String> emailList = _contact.getEmails();
+        setupEmailsAndPhones();
 
-		if (emailList.size() != 0) {
-			// Can't use a ListView for e-mails or phone lists since we want the
-			// entire
-			// profile screen to scroll rather than two scroll areas for the
-			// e-mails and
-			// phone lists.
 
-			LinearLayout emails = (LinearLayout) findViewById(R.id.profile_email_list);
-			for (String email : emailList) {
-				LayoutInflater inflater = getLayoutInflater();
-				View item = inflater.inflate(R.layout.contact_email_view_item,
-						emails, false);
-
-				((TextView) item.findViewById(R.id.profile_email_item_text))
-						.setText(email);
-
-				ImageButton email_btn = (ImageButton) item
-						.findViewById(R.id.profile_email_item_image);
-				if (email.equals(_contact.getDefaultEmail())) {
-					email_btn.setImageResource(R.drawable.email_selected_transparent);
-				}
-				email_btn.setTag(email);
-				email_btn.setOnClickListener(this);
-
-				emails.addView(item);
-			}
-		} else {
-			// If there are no e-mails associated with this contact, don't show
-			// the label
-			((TextView) findViewById(R.id.profile_emails_label))
-					.setVisibility(View.GONE);
-		}
-
-		// Add phones to view
-
-		List<String> phoneList = _contact.getPhoneNumbers();
-
-		if (phoneList.size() != 0) {
-			LinearLayout phones = (LinearLayout) findViewById(R.id.profile_phone_list);
-			for (String phone : phoneList) {
-				LayoutInflater inflater = getLayoutInflater();
-				View item = inflater.inflate(R.layout.contact_phone_view_item,
-						phones, false);
-
-				((TextView) item.findViewById(R.id.profile_phone_item_text))
-						.setText(phone);
-
-				ImageButton contact_btn = (ImageButton) item
-						.findViewById(R.id.profile_phone_item_contact);
-				if (phone.equals(_contact.getDefaultContactPhone())) {
-					contact_btn.setImageResource(R.drawable.phone_selected_transparent);
-				}
-				contact_btn.setTag(phone);
-				contact_btn.setOnClickListener(this);
-
-				ImageButton text_btn = (ImageButton) item
-						.findViewById(R.id.profile_phone_item_texting);
-				if (phone.equals(_contact.getDefaultTextPhone())) {
-					text_btn.setImageResource(R.drawable.texting_selected_transparent);
-				}
-				text_btn.setTag(phone);
-				text_btn.setOnClickListener(this);
-
-				phones.addView(item);
-			}
-		} else {
-			// If there are no phone numbers associated with this contact, don't
-			// show the label
-			((TextView) findViewById(R.id.profile_phones_label))
-					.setVisibility(View.GONE);
-		}
 	}
 
-	public void onClick(View v) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ContactDataSource datasource = new ContactDataSource(this);
+        datasource.open();
+        _contact = datasource.get(_contact.getId());
+        datasource.close();
+
+        setupEmailsAndPhones();
+    }
+
+    public void onClick(View v) {
 		Intent intent;
 		switch (v.getId()) {
 		case R.id.profile_email_item_image:
@@ -168,4 +103,92 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 
 		}
 	}
+
+    private void setupEmailsAndPhones() {
+
+        ((TextView) findViewById(R.id.profile_name))
+                .setText(_contact.getName());
+        ((TextView) findViewById(R.id.profile_title)).setText(_contact
+                .getTitle());
+
+        // Add e-mails to view
+        List<String> emailList = _contact.getEmails();
+
+        if (emailList.size() != 0) {
+            // Can't use a ListView for e-mails or phone lists since we want the
+            // entire
+            // profile screen to scroll rather than two scroll areas for the
+            // e-mails and
+            // phone lists.
+
+            LinearLayout emails = (LinearLayout) findViewById(R.id.profile_email_list);
+            emails.removeAllViews();
+
+            for (String email : emailList) {
+                LayoutInflater inflater = getLayoutInflater();
+                View item = inflater.inflate(R.layout.contact_email_view_item,
+                        emails, false);
+
+                ((TextView) item.findViewById(R.id.profile_email_item_text))
+                        .setText(email);
+
+                ImageButton email_btn = (ImageButton) item
+                        .findViewById(R.id.profile_email_item_image);
+                if (email.equals(_contact.getDefaultEmail())) {
+                    email_btn.setImageResource(R.drawable.email_selected_transparent);
+                }
+                email_btn.setTag(email);
+                email_btn.setOnClickListener(this);
+
+                emails.addView(item);
+            }
+        } else {
+            // If there are no e-mails associated with this contact, don't show
+            // the label
+            ((TextView) findViewById(R.id.profile_emails_label))
+                    .setVisibility(View.GONE);
+        }
+
+        // Add phones to view
+
+        List<String> phoneList = _contact.getPhoneNumbers();
+
+        if (phoneList.size() != 0) {
+            LinearLayout phones = (LinearLayout) findViewById(R.id.profile_phone_list);
+            phones.removeAllViews();
+
+            for (String phone : phoneList) {
+                LayoutInflater inflater = getLayoutInflater();
+                View item = inflater.inflate(R.layout.contact_phone_view_item,
+                        phones, false);
+
+                ((TextView) item.findViewById(R.id.profile_phone_item_text))
+                        .setText(phone);
+
+                ImageButton contact_btn = (ImageButton) item
+                        .findViewById(R.id.profile_phone_item_contact);
+                if (phone.equals(_contact.getDefaultContactPhone())) {
+                    contact_btn.setImageResource(R.drawable.phone_selected_transparent);
+                }
+                contact_btn.setTag(phone);
+                contact_btn.setOnClickListener(this);
+
+                ImageButton text_btn = (ImageButton) item
+                        .findViewById(R.id.profile_phone_item_texting);
+                if (phone.equals(_contact.getDefaultTextPhone())) {
+                    text_btn.setImageResource(R.drawable.texting_selected_transparent);
+                }
+                text_btn.setTag(phone);
+                text_btn.setOnClickListener(this);
+
+                phones.addView(item);
+            }
+        } else {
+            // If there are no phone numbers associated with this contact, don't
+            // show the label
+            ((TextView) findViewById(R.id.profile_phones_label))
+                    .setVisibility(View.GONE);
+        }
+
+    }
 }

@@ -113,15 +113,31 @@ public class ContactListActivity extends ListActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        this.contact_adapter.clear();
-        ContactDataSource datasource = new ContactDataSource(this);
-        datasource.open();
-        for(Contact c : datasource.all()) {
-            this.contact_adapter.add(c);
-        }
-       datasource.close();
-       this.contact_adapter.notifyDataSetChanged();
+        refreshList();
     }
+
+    protected void onSaveInstanceState(Bundle icicle) {
+		super.onSaveInstanceState(icicle);
+	}
+
+	public void onRestoreInstanceState(Bundle icicle) {
+		super.onRestoreInstanceState(icicle);
+		refreshList();
+	}
+
+	private void refreshList() {
+		this.contact_adapter.clear();
+		ContactDataSource datasource = new ContactDataSource(this);
+		datasource.open();
+		for(Contact c : datasource.all()) {
+			this.contact_adapter.add(c);
+		}
+		datasource.close();
+		this.contact_adapter.notifyDataSetChanged();
+
+		EditText search_box = (EditText) findViewById(R.id.search_box);
+		contact_adapter.getFilter().filter(search_box.getText().toString());
+	}
 
     @Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -157,6 +173,8 @@ public class ContactListActivity extends ListActivity implements
                 datasource.open();
                 datasource.delete(contact);
                 datasource.close();
+
+                refreshList();
                 return true;
             default:
                 return super.onContextItemSelected(item);

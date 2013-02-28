@@ -119,13 +119,13 @@ public class ContactListActivity extends ListActivity implements
             case R.id.profile:
                 Intent profileIntent = new Intent(getBaseContext(),
                         ContactViewActivity.class);
-                profileIntent.putExtra("ContactID", contact.getContactId());
+                profileIntent.putExtra("ContactID", contact.getId());
                 startActivity(profileIntent);
                 return true;
             case R.id.edit:
                 Intent editIntent = new Intent(getBaseContext(),
                         ContactEditActivity.class);
-                editIntent.putExtra("ContactID", contact.getContactId());
+                editIntent.putExtra("ContactID", contact.getId());
                 startActivity(editIntent);
                 return true;
             case R.id.delete:

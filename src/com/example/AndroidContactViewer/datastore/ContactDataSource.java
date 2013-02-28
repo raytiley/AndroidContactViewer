@@ -167,23 +167,23 @@ public class ContactDataSource implements ContactRepositoryInterface {
 
 	@Override
 	public Contact update(Contact contact) {
-		dropAllEmailsForContact(contact.getContactId());
-		dropAllPhonesForContact(contact.getContactId());
+		dropAllEmailsForContact(contact.getId());
+		dropAllPhonesForContact(contact.getId());
 		
 		ContentValues values = new ContentValues();
 		values.put(MySQLiteHelper.COLUMN_CONTACT_NAME, contact.getName());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TITLE, contact.getTitle());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TWITTER_ID,
 				contact.getTwitterId());
-		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contact.getContactId(), null);
+		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contact.getId(), null);
 		
-		addAllEmailsForContact(contact.getContactId(), contact.getEmails());
-		addAllPhonesForContact(contact.getContactId(), contact.getPhoneNumbers());
-		setDefaultPhone(contact.getContactId(), contact.getDefaultContactPhone());
-		setDefaultEmail(contact.getContactId(), contact.getDefaultEmail());
-		setDefaultText(contact.getContactId(), contact.getDefaultTextPhone());
+		addAllEmailsForContact(contact.getId(), contact.getEmails());
+		addAllPhonesForContact(contact.getId(), contact.getPhoneNumbers());
+		setDefaultPhone(contact.getId(), contact.getDefaultContactPhone());
+		setDefaultEmail(contact.getId(), contact.getDefaultEmail());
+		setDefaultText(contact.getId(), contact.getDefaultTextPhone());
 		
-		return get(contact.getContactId());
+		return get(contact.getId());
 	}
 
 	@Override
@@ -203,24 +203,24 @@ public class ContactDataSource implements ContactRepositoryInterface {
 				(int) cursor.getLong(cursor.getColumnIndex(MySQLiteHelper.COLUMN_ID)),
 				cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_NAME)));
 		contact.setTitle(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_TITLE)));
-		String defaultPhone = getDefaultPhone(contact.getContactId());
+		String defaultPhone = getDefaultPhone(contact.getId());
 		if (defaultPhone != null && !"".equals(defaultPhone.trim())) {
 			contact.setDefaultContactPhone(defaultPhone);
 		}
-		String defaultEmail = getDefaultEmail(contact.getContactId());
+		String defaultEmail = getDefaultEmail(contact.getId());
 		if (defaultEmail != null && !"".equals(defaultEmail.trim())) {
 			contact.setDefaultEmail(defaultEmail);
 		}
-		String defaultText = getDefaultText(contact.getContactId());
+		String defaultText = getDefaultText(contact.getId());
 		if (defaultText != null && !"".equals(defaultText.trim())) {
 			contact.setDefaultTextPhone(defaultText);
 		}
 		contact.setTwitterId(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_TWITTER_ID)));
 		
-		for (String email : getContactEmails(contact.getContactId())) {
+		for (String email : getContactEmails(contact.getId())) {
 			contact.addEmail(email);
 		}
-		for (String phone : getContactPhones(contact.getContactId())) {
+		for (String phone : getContactPhones(contact.getId())) {
 			contact.addPhoneNumber(phone);
 		}
 

@@ -328,6 +328,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             _contact.addEmail(text.getText().toString());
         }
 
+        //Set all phones
         LinearLayout phones = (LinearLayout) findViewById(R.id.contact_edit_phone_list);
         for (int i = 0; i < phones.getChildCount(); i++) {
             LinearLayout phone = (LinearLayout)phones.getChildAt(i);
@@ -335,31 +336,11 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             _contact.addPhoneNumber(text.getText().toString());
         }
 
+        //Setup Defaults
         _contact.setDefaultContactPhone(_defaultCallPhone);
         _contact.setDefaultTextPhone(_defaultMessagePhone);
         _contact.setDefaultEmail(_defaultEmail);
 
-        // Try to get gravatar
-        try {
-            String email = _contact.getDefaultEmail() == null ? _contact.getName() : _contact.getDefaultEmail().toLowerCase();
-            String gravatar = MD5Util.md5Hex(email);
-            URL url = new URL("http://www.gravatar.com/avatar/" + gravatar + "?d=retro");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
-            FileOutputStream output = this.openFileOutput(filename, Context.MODE_PRIVATE);
-
-            int read;
-            byte[] data = new byte[1024];
-            while((read = is.read(data)) != -1)
-                output.write(data, 0, read);
-        }
-        catch (Exception e)
-        {
-            Log.e("gravatar", e.getMessage());
-            // Should probably do something with exception?
-        }
 
         ContactDataSource datasource = new ContactDataSource(this);
         datasource.open();
@@ -367,8 +348,12 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             datasource.update(_contact);
         }
         else {
-            datasource.add(_contact);
+            _contact = datasource.add(_contact);
         }
+
         datasource.close();
+
+        //Download Gravatar
+        _contact.downloadGravatar(this);
     }
 }

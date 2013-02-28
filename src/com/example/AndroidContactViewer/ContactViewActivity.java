@@ -94,7 +94,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 		case R.id.toolbar_right_button:
 			Intent myIntent = new Intent(getBaseContext(),
 					ContactEditActivity.class);
-			myIntent.putExtra("ContactID", _contact.getContactId());
+			myIntent.putExtra("ContactID", _contact.getId());
 			startActivity(myIntent);
 			break;
 		default:
@@ -108,7 +108,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
     private void setupEmailsAndPhones() {
 
         //Check if we have gravatar on disk
-        String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
+        String filename = _contact.getLocalGravatarPath();
         try
         {
             File imgFile = getFileStreamPath(filename);

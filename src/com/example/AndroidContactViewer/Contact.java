@@ -1,5 +1,16 @@
 package com.example.AndroidContactViewer;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -75,13 +86,6 @@ public class Contact {
 	}
 
 	/**
-	 * Gets the contact's ID.
-	 */
-	public int getContactId() {
-		return _contactId;
-	}
-
-	/**
 	 * Set the contact's name.
 	 */
 	public Contact setName(String name) {
@@ -149,23 +153,6 @@ public class Contact {
 	}
 
 	/**
-	 * Removes the given phone number from the list of phone numbers associated
-	 * with this account.
-	 * 
-	 * @param phoneNumber
-	 *            The phone number to remove from the account.
-	 */
-	public void removePhoneNumber(String phoneNumber) {
-		_phones.remove(phoneNumber);
-		if (phoneNumber == _defaultContactPhone) {
-			_defaultContactPhone = null;
-		}
-		if (phoneNumber == _defaultTextPhone) {
-			_defaultTextPhone = null;
-		}
-	}
-
-	/**
 	 * @return The contact's id
 	 */
 	public int getId() {
@@ -223,20 +210,6 @@ public class Contact {
 	}
 
 	/**
-	 * Removes the given e-mail from the list of e-mails associated with this
-	 * account.
-	 * 
-	 * @param email
-	 *            The e-mail to remove.
-	 */
-	public void removeEmail(String email) {
-		_emails.remove(email);
-		if (email == _defaultEmail) {
-			_defaultEmail = null;
-		}
-	}
-
-	/**
 	 * @return the contact's Twitter ID
 	 */
 	public String getTwitterId() {
@@ -279,5 +252,35 @@ public class Contact {
     public void clearEmailsAndPhones() {
         this._emails.clear();
         this._phones.clear();
+    }
+
+    public void downloadGravatar(Context context) {
+
+        // Try to get gravatar
+        if(this.getId() > 0) {
+            try {
+                String email = this.getDefaultEmail() == null ? this.getName() : this.getDefaultEmail().toLowerCase();
+                String gravatar = MD5Util.md5Hex(email);
+                URL url = new URL("http://www.gravatar.com/avatar/" + gravatar + "?d=monsterid");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                String filename = this.getLocalGravatarPath();
+                FileOutputStream output = context.openFileOutput(filename, Context.MODE_PRIVATE);
+
+                int read;
+                byte[] data = new byte[1024];
+                while((read = is.read(data)) != -1)
+                    output.write(data, 0, read);
+            }
+            catch (Exception e)
+            {
+                Log.e("gravatar", e.getMessage());
+            }
+        }
+    }
+
+    public String getLocalGravatarPath() {
+        return Integer.toString(this.getId()) + "-gravatar.jpg";
     }
 }

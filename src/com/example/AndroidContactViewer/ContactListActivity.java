@@ -338,8 +338,6 @@ public class ContactListActivity extends ListActivity implements
 					.getName());
 			((TextView) item.findViewById(R.id.item_title)).setText(contact
 					.getTitle());
-			((TextView) item.findViewById(R.id.item_phone)).setText(contact
-					.getDefaultContactPhone());
 
             //Check if we have gravatar on disk
             String filename = Integer.toString(contact.getId()) + "-gravatar.jpg";

@@ -20,7 +20,8 @@
               android:layout_height="wrap_content"
               android:layout_margin="4dp"
               android:layout_marginLeft="10dp"
-              android:hint="Email" />
+              android:hint="Email"
+              android:inputType="textEmailAddress" />
 
     <ImageButton
             android:id="@+id/contact_edit_email_delete"

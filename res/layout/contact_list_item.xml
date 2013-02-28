@@ -37,14 +37,5 @@
         android:layout_centerVertical="true"
         android:src="@android:drawable/ic_media_play" 
         />
-    
-    <TextView android:id="@+id/item_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18dp"
-        android:layout_margin="4dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/item_icon"
-        android:text="Phone"/>
 
 </RelativeLayout>

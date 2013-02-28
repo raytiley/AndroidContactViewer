@@ -311,10 +311,7 @@ public class ContactListActivity extends ListActivity implements
         Contact steveM = new Contact(0, "Steve McAdams")
                 .setTitle("Lockheed")
                 .addEmail("smcadams86@gmail.com")
-                .setDefaultEmail("smcadams86@gmail.com")
-                .addPhoneNumber("555-555-3000")
-                .setDefaultContactPhone("555-555-3000")
-                .setDefaultTextPhone("555-555-3000");
+                .addPhoneNumber("555-555-3000");
 
         ray = datasource.add(ray);
         steveA = datasource.add(steveA);
@@ -326,11 +323,9 @@ public class ContactListActivity extends ListActivity implements
         tyler.downloadGravatar(this);
         steveM.downloadGravatar(this);
 
-        for(Contact c : datasource.all()) {
-            this.contact_adapter.add(c);
-        }
         datasource.close();
-        this.contact_adapter.notifyDataSetChanged();
+        
+        refreshList();
 
     }
 

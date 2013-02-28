@@ -87,11 +87,32 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		phones.add(contact.getDefaultTextPhone());
 		addAllPhonesForContact(insertId, phones);
 		
-		setDefaultPhone(insertId, contact.getDefaultContactPhone());
-		setDefaultEmail(insertId, contact.getDefaultEmail());
-		setDefaultText(insertId, contact.getDefaultTextPhone());
+		setDefaults(insertId, contact);
 		
 		return get(insertId);
+	}
+
+	private void setDefaults(long insertId, Contact contact) {
+		if (contact.getDefaultContactPhone() == null && contact.getPhoneNumbers().size() > 0) {
+			setDefaultPhone(insertId, contact.getPhoneNumbers().get(0));
+		}
+		else {
+			setDefaultPhone(insertId, contact.getDefaultContactPhone());
+		}
+
+		if (contact.getDefaultEmail() == null && contact.getEmails().size() > 0) {
+			setDefaultEmail(insertId, contact.getEmails().get(0));
+		}
+		else {
+			setDefaultEmail(insertId, contact.getDefaultEmail());
+		}
+
+		if (contact.getDefaultTextPhone() == null && contact.getPhoneNumbers().size() > 0) {
+			setDefaultText(insertId, contact.getPhoneNumbers().get(0));
+		}
+		else {
+			setDefaultText(insertId, contact.getDefaultTextPhone());
+		}
 	}
 
 	@Override
@@ -117,10 +138,8 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		
 		addAllEmailsForContact(contact.getId(), contact.getEmails());
 		addAllPhonesForContact(contact.getId(), contact.getPhoneNumbers());
-		setDefaultPhone(contact.getId(), contact.getDefaultContactPhone());
-		setDefaultEmail(contact.getId(), contact.getDefaultEmail());
-		setDefaultText(contact.getId(), contact.getDefaultTextPhone());
 		
+		setDefaults(contact.getId(), contact);
 		return get(contact.getId());
 	}
 

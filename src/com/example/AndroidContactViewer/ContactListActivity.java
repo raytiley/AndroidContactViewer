@@ -51,6 +51,28 @@ public class ContactListActivity extends ListActivity implements
 		// initialize the list view
 		ContactDataSource datasource = new ContactDataSource(this);
 		datasource.open();
+
+        // Check if the user wants to prepopulate some awesomeness
+        if(datasource.count() == 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage("You have no contacts, want us to make some for you?")
+                    .setTitle("No Contacts")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Make some contacts.
+                            createNewContacts();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int id) {
+                            //Do nothing
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+
 		contact_adapter = new ContactAdapter(this, R.layout.contact_list_item,
 				datasource.all());
 		setListAdapter(contact_adapter);
@@ -237,6 +259,62 @@ public class ContactListActivity extends ListActivity implements
 			super.onBackPressed();
 		}
 	}
+
+    private void createNewContacts() {
+        ContactDataSource datasource = new ContactDataSource(this);
+        datasource.open();
+
+        Contact ray = new Contact(0, "Ray Tiley")
+                .setTitle("Tightrope Media Systems")
+                .addEmail("raytiley@gmail.com")
+                .setDefaultEmail("raytiley@gmail.com")
+                .addPhoneNumber("207-518-8612")
+                .addPhoneNumber("866-866-4118")
+                .setDefaultTextPhone("207-518-8612")
+                .setDefaultContactPhone("866-866-4118");
+
+        Contact tyler = new Contact(0, "Tyler Smith")
+                .setTitle("General Dynamics")
+                .addEmail("tylerhesthedude@gmail.com")
+                .setDefaultEmail("tylerhesthedude@gmail.com")
+                .addPhoneNumber("555-555-1000")
+                .setDefaultContactPhone("555-555-1000")
+                .setDefaultTextPhone("555-555-1000");
+
+
+        Contact steveA = new Contact(0, "Steve Atterbury")
+                .setTitle("Lockheed")
+                .addEmail("unimatrix01@gmail.com")
+                .setDefaultEmail("unimatrix01@gmail.com")
+                .addPhoneNumber("555-555-2000")
+                .setDefaultTextPhone("555-555-2000")
+                .setDefaultContactPhone("555-555-2000");
+
+        Contact steveM = new Contact(0, "Steve McAdams")
+                .setTitle("Lockheed")
+                .addEmail("smcadams86@gmail.com")
+                .setDefaultEmail("smcadams86@gmail.com")
+                .addPhoneNumber("555-555-3000")
+                .setDefaultContactPhone("555-555-3000")
+                .setDefaultTextPhone("555-555-3000");
+
+        ray = datasource.add(ray);
+        steveA = datasource.add(steveA);
+        tyler = datasource.add(tyler);
+        steveM = datasource.add(steveM);
+
+        ray.downloadGravatar(this);
+        steveA.downloadGravatar(this);
+        tyler.downloadGravatar(this);
+        steveM.downloadGravatar(this);
+
+        for(Contact c : datasource.all()) {
+            this.contact_adapter.add(c);
+        }
+        datasource.close();
+        this.contact_adapter.notifyDataSetChanged();
+
+    }
 
 	/*
 	 * We need to provide a custom adapter in order to use a custom list item

@@ -148,8 +148,9 @@ public class Contact {
 	 * @param phoneNumber
 	 *            The phone number to add.
 	 */
-	public void addPhoneNumber(String phoneNumber) {
+	public Contact addPhoneNumber(String phoneNumber) {
 		_phones.add(phoneNumber);
+        return this;
 	}
 
 	/**
@@ -205,8 +206,9 @@ public class Contact {
 	 * @param phoneNumber
 	 *            The phone number to add.
 	 */
-	public void addEmail(String email) {
+	public Contact addEmail(String email) {
 		_emails.add(email);
+        return this;
 	}
 
 	/**

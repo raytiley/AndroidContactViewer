@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -252,10 +253,10 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 					.removeView(view);
 			break;
 		case R.id.contact_edit_phone_add:
-			addViewForPhone();
+			addViewForPhone("", false, false);
 			break;
 		case R.id.contact_edit_email_add:
-			addViewForEmail();
+			addViewForEmail("", false);
 			break;
 		default:
 			Toast.makeText(ContactEditActivity.this,
@@ -265,12 +266,15 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void addViewForPhone() {
+	private void addViewForPhone(String text, Boolean defaultCall, Boolean defaultText) {
 		LinearLayout phones = (LinearLayout) findViewById(R.id.contact_edit_phone_list);
 
 		LayoutInflater inflater = getLayoutInflater();
 		View item = inflater.inflate(R.layout.contact_phone_edit_item, phones,
 				false);
+
+        EditText editText = (EditText) item.findViewById(R.id.contact_edit_phone_edit_text);
+        editText.setText(text);
 
 		ImageButton contact_btn = (ImageButton) item
 				.findViewById(R.id.contact_edit_call_action);
@@ -282,6 +286,18 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		text_btn.setTag(item);
 		text_btn.setOnClickListener(this);
 
+        if(defaultCall) {
+            contact_btn.setImageResource(R.drawable.phone_selected_transparent);
+        } else {
+            contact_btn.setImageResource(R.drawable.phone_transparent);
+        }
+
+        if(defaultText) {
+            text_btn.setImageResource(R.drawable.texting_selected_transparent);
+        } else {
+            text_btn.setImageResource(R.drawable.texting_transparent);
+        }
+
 		ImageButton remove_btn = (ImageButton) item
 				.findViewById(R.id.contact_edit_phone_delete);
 		remove_btn.setTag(item);
@@ -290,17 +306,26 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		phones.addView(item);
 	}
 
-	private void addViewForEmail() {
+	private void addViewForEmail(String text, Boolean defaultEmail) {
 		LinearLayout emails = (LinearLayout) findViewById(R.id.contact_edit_email_list);
 
 		LayoutInflater inflater = getLayoutInflater();
 		View item = inflater.inflate(R.layout.contact_email_edit_item, emails,
 				false);
 
+        EditText editText = (EditText) item.findViewById(R.id.contact_edit_email_edit_text);
+        editText.setText(text);
+
 		ImageButton contact_btn = (ImageButton) item
 				.findViewById(R.id.contact_edit_email_action);
 		contact_btn.setTag(item);
 		contact_btn.setOnClickListener(this);
+
+        if(defaultEmail) {
+            contact_btn.setImageResource(R.drawable.email_selected_transparent);
+        } else {
+            contact_btn.setImageResource(R.drawable.email_transparent);
+        }
 
 		ImageButton remove_btn = (ImageButton) item
 				.findViewById(R.id.contact_edit_email_delete);
@@ -355,5 +380,68 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
         //Download Gravatar
         _contact.downloadGravatar(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle icicle) {
+        super.onSaveInstanceState(icicle);
+
+        icicle.putString("contactName", ((EditText)findViewById(R.id.edit_contact_name)).getText().toString());
+        icicle.putString("contactTitle", ((EditText)findViewById(R.id.edit_contact_title)).getText().toString());
+        icicle.putString("defaultEmail", _defaultEmail);
+        icicle.putString("defaultCallPhone", _defaultCallPhone);
+        icicle.putString("defaultMessagePhone", _defaultMessagePhone);
+        ArrayList<String> emailStore = new ArrayList<String>();
+        ArrayList<String> phoneStore = new ArrayList<String>();
+
+        LinearLayout emails = (LinearLayout) findViewById(R.id.contact_edit_email_list);
+        for (int i = 0; i < emails.getChildCount(); i++) {
+            LinearLayout email = (LinearLayout)emails.getChildAt(i);
+            EditText text = (EditText)email.findViewById(R.id.contact_edit_email_edit_text);
+            emailStore.add(text.getText().toString());
+        }
+
+        //Set all phones
+        LinearLayout phones = (LinearLayout) findViewById(R.id.contact_edit_phone_list);
+        for (int i = 0; i < phones.getChildCount(); i++) {
+            LinearLayout phone = (LinearLayout)phones.getChildAt(i);
+            EditText text = (EditText)phone.findViewById(R.id.contact_edit_phone_edit_text);
+            phoneStore.add(text.getText().toString());
+        }
+
+        icicle.putStringArrayList("emails", emailStore);
+        icicle.putStringArrayList("phones", phoneStore);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle icicle) {
+        if (icicle != null) {
+
+            LinearLayout phones = (LinearLayout) findViewById(R.id.contact_edit_phone_list);
+            LinearLayout emails = (LinearLayout) findViewById(R.id.contact_edit_email_list);
+
+            phones.removeAllViews();
+            emails.removeAllViews();
+
+            //dethaw some stuff
+            ((EditText)findViewById(R.id.edit_contact_name)).setText(icicle.getString("contactName"));
+            ((EditText)findViewById(R.id.edit_contact_title)).setText(icicle.getString("contactTitle"));
+
+            ArrayList<String> emailStore = icicle.getStringArrayList("emails");
+            ArrayList<String> phoneStore = icicle.getStringArrayList("phones");
+            _defaultEmail = icicle.getString("defaultEmail");
+            _defaultCallPhone = icicle.getString("defaultCallPhone");
+            _defaultMessagePhone = icicle.getString("defaultMessagePhone");
+
+            for (String email : emailStore) {
+                addViewForEmail(email, email.equals(_defaultEmail));
+            }
+
+            for (String phone : phoneStore) {
+                addViewForPhone(phone,
+                        phone.equals(_defaultCallPhone),
+                        phone.equals(_defaultMessagePhone));
+            }
+        }
     }
 }

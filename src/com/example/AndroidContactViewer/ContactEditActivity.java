@@ -241,6 +241,12 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             finish();
 			break;
 		case R.id.contact_edit_phone_delete:
+            if(_defaultMessagePhone.equals(text)) {
+                _defaultMessagePhone = "";
+            }
+            if(_defaultCallPhone.equals(text)) {
+                _defaultCallPhone = "";
+            }
 			Toast.makeText(ContactEditActivity.this, "Remove phone: " + text,
 					Toast.LENGTH_SHORT).show();
 			((LinearLayout) findViewById(R.id.contact_edit_phone_list))

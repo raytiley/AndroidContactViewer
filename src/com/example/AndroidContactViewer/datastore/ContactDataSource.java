@@ -93,21 +93,21 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	}
 
 	private void setDefaults(long insertId, Contact contact) {
-		if (contact.getDefaultContactPhone() == null && contact.getPhoneNumbers().size() > 0) {
+		if (contact.getDefaultContactPhone() == "" && contact.getPhoneNumbers().size() > 0) {
 			setDefaultPhone(insertId, contact.getPhoneNumbers().get(0));
 		}
 		else {
 			setDefaultPhone(insertId, contact.getDefaultContactPhone());
 		}
 
-		if (contact.getDefaultEmail() == null && contact.getEmails().size() > 0) {
+		if (contact.getDefaultEmail() == "" && contact.getEmails().size() > 0) {
 			setDefaultEmail(insertId, contact.getEmails().get(0));
 		}
 		else {
 			setDefaultEmail(insertId, contact.getDefaultEmail());
 		}
 
-		if (contact.getDefaultTextPhone() == null && contact.getPhoneNumbers().size() > 0) {
+		if (contact.getDefaultTextPhone() == "" && contact.getPhoneNumbers().size() > 0) {
 			setDefaultText(insertId, contact.getPhoneNumbers().get(0));
 		}
 		else {

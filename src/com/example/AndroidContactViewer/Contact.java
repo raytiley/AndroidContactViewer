@@ -76,13 +76,13 @@ public class Contact {
 	public Contact(int contactId, String name) {
 		_contactId = contactId;
 		_name = name;
-		_title = null;
-		_defaultContactPhone = null;
-		_defaultTextPhone = null;
+		_title = "";
+		_defaultContactPhone = "";
+		_defaultTextPhone = "";
 		_phones = new TreeSet<String>();
-		_defaultEmail = null;
+		_defaultEmail = "";
 		_emails = new TreeSet<String>();
-		_twitterId = null;
+		_twitterId = "";
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class Contact {
 	 */
 	public Contact setDefaultTextPhone(String defaultTextPhone) {
 		_defaultTextPhone = defaultTextPhone;
-		_phones.add(_defaultTextPhone);
+		this.addPhoneNumber(_defaultTextPhone);
 		return this;
 	}
 
@@ -128,7 +128,7 @@ public class Contact {
 	 */
 	public Contact setDefaultContactPhone(String defaultContactPhone) {
 		_defaultContactPhone = defaultContactPhone;
-		_phones.add(_defaultContactPhone);
+		this.addPhoneNumber(defaultContactPhone);
 		return this;
 	}
 
@@ -149,7 +149,9 @@ public class Contact {
 	 *            The phone number to add.
 	 */
 	public Contact addPhoneNumber(String phoneNumber) {
-		_phones.add(phoneNumber);
+        if(phoneNumber.length() > 1) {
+		    _phones.add(phoneNumber);
+        }
         return this;
 	}
 
@@ -187,7 +189,7 @@ public class Contact {
 	 */
 	public Contact setDefaultEmail(String defaultEmail) {
 		_defaultEmail = defaultEmail;
-		_emails.add(_defaultEmail);
+		this.addEmail(defaultEmail);
 		return this;
 	}
 
@@ -207,7 +209,9 @@ public class Contact {
 	 *            The phone number to add.
 	 */
 	public Contact addEmail(String email) {
-		_emails.add(email);
+        if(email.length() > 1) {
+		    _emails.add(email);
+        }
         return this;
 	}
 
@@ -252,6 +256,9 @@ public class Contact {
 	}
 
     public void clearEmailsAndPhones() {
+        this._defaultContactPhone = "";
+        this._defaultTextPhone = "";
+        this._defaultEmail = "";
         this._emails.clear();
         this._phones.clear();
     }

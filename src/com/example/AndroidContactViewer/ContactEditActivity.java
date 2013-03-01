@@ -62,6 +62,9 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 			datasource.open();
 			_contact = datasource.get(contactID);
 			datasource.close();
+            _defaultMessagePhone = _contact.getDefaultTextPhone();
+            _defaultCallPhone = _contact.getDefaultContactPhone();
+            _defaultEmail = _contact.getDefaultEmail();
 		}
 
         //Check if we have gravatar on disk
@@ -294,12 +297,14 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
         if(defaultCall) {
             contact_btn.setImageResource(R.drawable.phone_selected_transparent);
+            _defaultPhoneButton = contact_btn;
         } else {
             contact_btn.setImageResource(R.drawable.phone_transparent);
         }
 
         if(defaultText) {
             text_btn.setImageResource(R.drawable.texting_selected_transparent);
+            _defaultTextButton = text_btn;
         } else {
             text_btn.setImageResource(R.drawable.texting_transparent);
         }
@@ -329,6 +334,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 
         if(defaultEmail) {
             contact_btn.setImageResource(R.drawable.email_selected_transparent);
+            _defaultEmailButton = contact_btn;
         } else {
             contact_btn.setImageResource(R.drawable.email_transparent);
         }

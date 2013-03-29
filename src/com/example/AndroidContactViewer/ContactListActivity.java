@@ -26,6 +26,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
+import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 public class ContactListActivity extends ListActivity implements
 		OnClickListener {
@@ -49,7 +52,7 @@ public class ContactListActivity extends ListActivity implements
 		toolbar.hideLeftButton();
 
 		// initialize the list view
-		ContactDataSource datasource = new ContactDataSource(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
 		datasource.open();
 
         // Check if the user wants to prepopulate some awesomeness
@@ -127,7 +130,7 @@ public class ContactListActivity extends ListActivity implements
 
 	private void refreshList() {
 		this.contact_adapter.clear();
-		ContactDataSource datasource = new ContactDataSource(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
 		datasource.open();
 		for(Contact c : datasource.all()) {
 			this.contact_adapter.add(c);
@@ -168,7 +171,7 @@ public class ContactListActivity extends ListActivity implements
                 return true;
             case R.id.delete:
                 //TODO Maybe a confermation???
-                ContactDataSource datasource = new ContactDataSource(this);
+                ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
                 this.contact_adapter.remove(contact);
                 datasource.open();
                 datasource.delete(contact);
@@ -279,7 +282,7 @@ public class ContactListActivity extends ListActivity implements
 	}
 
     private void createNewContacts() {
-        ContactDataSource datasource = new ContactDataSource(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
         datasource.open();
 
         Contact ray = new Contact(0, "Ray Tiley")

@@ -12,5 +12,7 @@ public interface ContactRepositoryInterface {
 	public Contact add(Contact newContact);
 	public int delete(Contact contact);
 	public Contact update(Contact contact);
+	public void open();
+	public void close();
 	
 }

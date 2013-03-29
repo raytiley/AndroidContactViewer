@@ -38,10 +38,12 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		dbHelper = new MySQLiteHelper(context);
 	}
 
+	@Override
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	@Override
 	public void close() {
 		dbHelper.close();
 	}

@@ -1,15 +1,10 @@
 package com.example.AndroidContactViewer;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,10 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
+import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 /**
  * Created with IntelliJ IDEA. User: raytiley Date: 2/17/13 Time: 6:12 PM To
@@ -58,7 +60,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             _defaultCallPhone = "";
             _defaultEmail = "";
 		} else {
-			ContactDataSource datasource = new ContactDataSource(this);
+			ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
 			datasource.open();
 			_contact = datasource.get(contactID);
 			datasource.close();
@@ -379,7 +381,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         _contact.setDefaultEmail(_defaultEmail);
 
 
-        ContactDataSource datasource = new ContactDataSource(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
         datasource.open();
         if(_contact.getId() > 0) {
             datasource.update(_contact);

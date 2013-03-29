@@ -1,7 +1,6 @@
 package com.example.AndroidContactViewer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 
 import android.app.Activity;
@@ -15,9 +14,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.AndroidContactViewer.datastore.ContactDataSource;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
+import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
+import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 public class ContactViewActivity extends Activity implements OnClickListener {
 	private Contact _contact;
@@ -33,7 +40,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 
 		ToolbarConfig toolbar = new ToolbarConfig(this,
 				res.getString(R.string.profile));
-		ContactDataSource datasource = new ContactDataSource(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
 		datasource.open();
 		_contact = datasource.get(contactID);
 		datasource.close();
@@ -56,7 +63,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        ContactDataSource datasource = new ContactDataSource(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
         datasource.open();
         _contact = datasource.get(_contact.getId());
         datasource.close();

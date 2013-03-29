@@ -1,6 +1,5 @@
 package com.example.AndroidContactViewer.datastore;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

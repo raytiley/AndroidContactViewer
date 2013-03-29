@@ -25,10 +25,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.example.AndroidContactViewer.datastore.ContactDataSource;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
-import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 public class ContactListActivity extends ListActivity implements
 		OnClickListener {
@@ -203,7 +201,7 @@ public class ContactListActivity extends ListActivity implements
                         }
                         else {
                             // TODO : pop up menu of all phone numbers
-                            Toast.makeText(ContactListActivity.this, "No default phone number set", 5).show();
+                            Toast.makeText(ContactListActivity.this, "No default phone number set", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 1:
@@ -217,7 +215,7 @@ public class ContactListActivity extends ListActivity implements
                         }
                         else {
                             // TODO : pop up menu of all phone numbers
-                            Toast.makeText(ContactListActivity.this, "No default phone number set", 5).show();
+                            Toast.makeText(ContactListActivity.this, "No default phone number set", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 2:
@@ -230,7 +228,7 @@ public class ContactListActivity extends ListActivity implements
                         }
                         else {
                             // TODO : pop up menu of all emails
-                            Toast.makeText(ContactListActivity.this, "No default email set", 5).show();
+                            Toast.makeText(ContactListActivity.this, "No default email set", Toast.LENGTH_SHORT).show();
                         }
                         break;
                 }

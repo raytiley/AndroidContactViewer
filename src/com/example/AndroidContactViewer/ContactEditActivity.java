@@ -20,10 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.AndroidContactViewer.datastore.ContactDataSource;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
-import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 /**
  * Created with IntelliJ IDEA. User: raytiley Date: 2/17/13 Time: 6:12 PM To

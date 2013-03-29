@@ -21,10 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.AndroidContactViewer.datastore.ContactDataSource;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
-import com.example.AndroidContactViewer.datastore.WebContactDataSource;
 
 public class ContactViewActivity extends Activity implements OnClickListener {
 	private Contact _contact;

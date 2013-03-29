@@ -1,12 +1,9 @@
 package com.example.AndroidContactViewer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.widget.ImageView;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -20,6 +17,7 @@ import java.util.TreeSet;
  * Model class for storing a single contact.
  * 
  */
+@SuppressLint("DefaultLocale")
 public class Contact {
 
 	/**

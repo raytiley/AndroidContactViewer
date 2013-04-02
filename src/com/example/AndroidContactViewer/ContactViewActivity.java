@@ -32,7 +32,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact_view);
 
-		int contactID = (Integer) getIntent().getExtras().get("ContactID");
+		String contactID = (String) getIntent().getExtras().get("ContactID");
 
 		Resources res = getResources();
 

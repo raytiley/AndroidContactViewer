@@ -168,7 +168,7 @@ public class ContactListActivity extends ListActivity implements
                 startActivity(editIntent);
                 return true;
             case R.id.delete:
-                //TODO Maybe a confermation???
+                //TODO Maybe a confirmation???
                 ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
                 this.contact_adapter.remove(contact);
                 datasource.open();
@@ -243,7 +243,7 @@ public class ContactListActivity extends ListActivity implements
 		case R.id.toolbar_right_button:
 			Intent myIntent = new Intent(getBaseContext(),
 					ContactEditActivity.class);
-			myIntent.putExtra("ContactID", 0);
+			myIntent.putExtra("ContactID", (String)null);
 			startActivity(myIntent);
 			break;
 		default:
@@ -283,7 +283,7 @@ public class ContactListActivity extends ListActivity implements
         ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
         datasource.open();
 
-        Contact ray = new Contact(0, "Ray Tiley")
+        Contact ray = new Contact("Ray Tiley")
                 .setTitle("Tightrope Media Systems")
                 .addEmail("raytiley@gmail.com")
                 .setDefaultEmail("raytiley@gmail.com")
@@ -292,7 +292,7 @@ public class ContactListActivity extends ListActivity implements
                 .setDefaultTextPhone("207-518-8612")
                 .setDefaultContactPhone("866-866-4118");
 
-        Contact tyler = new Contact(0, "Tyler Smith")
+        Contact tyler = new Contact("Tyler Smith")
                 .setTitle("General Dynamics")
                 .addEmail("tylerhesthedude@gmail.com")
                 .setDefaultEmail("tylerhesthedude@gmail.com")
@@ -301,7 +301,7 @@ public class ContactListActivity extends ListActivity implements
                 .setDefaultTextPhone("555-555-1000");
 
 
-        Contact steveA = new Contact(0, "Steve Atterbury")
+        Contact steveA = new Contact("Steve Atterbury")
                 .setTitle("Lockheed")
                 .addEmail("unimatrix01@gmail.com")
                 .setDefaultEmail("unimatrix01@gmail.com")
@@ -309,7 +309,7 @@ public class ContactListActivity extends ListActivity implements
                 .setDefaultTextPhone("555-555-2000")
                 .setDefaultContactPhone("555-555-2000");
 
-        Contact steveM = new Contact(0, "Steve McAdams")
+        Contact steveM = new Contact("Steve McAdams")
                 .setTitle("Lockheed")
                 .addEmail("smcadams86@gmail.com")
                 .addPhoneNumber("555-555-3000");
@@ -354,7 +354,7 @@ public class ContactListActivity extends ListActivity implements
 					.getTitle());
 
             //Check if we have gravatar on disk
-            String filename = Integer.toString(contact.getId()) + "-gravatar.jpg";
+            String filename = contact.getId() + "-gravatar.jpg";
             try
             {
                 File imgFile = getFileStreamPath(filename);

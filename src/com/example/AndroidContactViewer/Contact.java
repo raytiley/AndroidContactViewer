@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 /**
  * Model class for storing a single contact.
@@ -23,7 +24,14 @@ public class Contact {
 	/**
 	 * The contact ID
 	 */
-	private int _contactId;
+	private String _contactId;
+
+	/**
+	 * @param _contactId the _contactId to set
+	 */
+	public void set_contactId(String _contactId) {
+		this._contactId = _contactId;
+	}
 
 	/**
 	 * The contact name.
@@ -64,14 +72,16 @@ public class Contact {
 	 * The contact's Twitter ID.
 	 */
 	private String _twitterId;
-
+	
+	private String groupId;
+	
 	/**
 	 * Creates a contact and assigns its name.
 	 * 
 	 * @param name
 	 *            the contact's name
 	 */
-	public Contact(int contactId, String name) {
+	public Contact(String contactId, String name) {
 		_contactId = contactId;
 		_name = name;
 		_title = "";
@@ -81,6 +91,10 @@ public class Contact {
 		_defaultEmail = "";
 		_emails = new TreeSet<String>();
 		_twitterId = "";
+	}
+	
+	public Contact(String name){
+		this(UUID.randomUUID().toString().replace('-', 'x'), name);
 	}
 
 	/**
@@ -156,7 +170,7 @@ public class Contact {
 	/**
 	 * @return The contact's id
 	 */
-	public int getId() {
+	public String getId() {
 		return _contactId;
 	}
 
@@ -264,7 +278,7 @@ public class Contact {
     public void downloadGravatar(Context context) {
 
         // Try to get gravatar
-        if(this.getId() > 0) {
+        if(this.getId() != null) {
             try {
                 String email = this.getDefaultEmail() == null ? this.getName() : this.getDefaultEmail().toLowerCase();
                 String gravatar = MD5Util.md5Hex(email);
@@ -288,6 +302,20 @@ public class Contact {
     }
 
     public String getLocalGravatarPath() {
-        return Integer.toString(this.getId()) + "-gravatar.jpg";
+        return this.getId() + "-gravatar.jpg";
     }
+
+	/**
+	 * @return the groupId
+	 */
+	public String getGroupId() {
+		return groupId;
+	}
+
+	/**
+	 * @param groupId the groupId to set
+	 */
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 }

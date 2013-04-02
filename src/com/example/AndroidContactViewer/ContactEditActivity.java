@@ -3,6 +3,7 @@ package com.example.AndroidContactViewer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -48,12 +49,12 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		ToolbarConfig toolbar = new ToolbarConfig(this,
 				res.getString(R.string.edit_contact));
 
-		int contactID = (Integer) getIntent().getExtras().get("ContactID");
-		if (contactID == 0) {
+		String contactID = (String) getIntent().getExtras().get("ContactID");
+		if (contactID == null) {
 			toolbar.getToolbarTitleView().setText(
 					res.getString(R.string.new_contact));
 			// Lets create a brand spanking new contact.
-			_contact = new Contact(0, "");
+			_contact = new Contact(null, "");
             _defaultMessagePhone = "";
             _defaultCallPhone = "";
             _defaultEmail = "";
@@ -68,7 +69,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
 		}
 
         //Check if we have gravatar on disk
-        String filename = Integer.toString(_contact.getId()) + "-gravatar.jpg";
+        String filename = _contact.getId() + "-gravatar.jpg";
         try
         {
             File imgFile = getFileStreamPath(filename);
@@ -378,13 +379,14 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         _contact.setDefaultTextPhone(_defaultMessagePhone);
         _contact.setDefaultEmail(_defaultEmail);
 
-
+//
         ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
         datasource.open();
-        if(_contact.getId() > 0) {
+        if(_contact.getId() != null) {
             datasource.update(_contact);
         }
         else {
+        	_contact.set_contactId(UUID.randomUUID().toString().replace('-', 'x'));
             _contact = datasource.add(_contact);
         }
 

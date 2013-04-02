@@ -72,28 +72,29 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	@Override
 	public Contact add(Contact contact) {
 		ContentValues values = new ContentValues();
+		values.put(MySQLiteHelper.COLUMN_ID, contact.getId());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_NAME, contact.getName());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TITLE, contact.getTitle());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TWITTER_ID,
 				contact.getTwitterId());
-		long insertId = database.insert(MySQLiteHelper.TABLE_CONTACTS, null,
+		database.insert(MySQLiteHelper.TABLE_CONTACTS, null,
 				values);
 		
 		List<String> emails = contact.getEmails();
 		emails.add(contact.getDefaultEmail());
-		addAllEmailsForContact(insertId, emails);
+		addAllEmailsForContact(contact.getId(), emails);
 		
 		List<String> phones = contact.getPhoneNumbers();
 		phones.add(contact.getDefaultContactPhone());
 		phones.add(contact.getDefaultTextPhone());
-		addAllPhonesForContact(insertId, phones);
+		addAllPhonesForContact(contact.getId(), phones);
 		
-		setDefaults(insertId, contact);
+		setDefaults(contact.getId(), contact);
 		
-		return get(insertId);
+		return get(contact.getId());
 	}
 
-	private void setDefaults(long insertId, Contact contact) {
+	private void setDefaults(String insertId, Contact contact) {
 		if (contact.getDefaultContactPhone() == "" && contact.getPhoneNumbers().size() > 0) {
 			setDefaultPhone(insertId, contact.getPhoneNumbers().get(0));
 		}
@@ -118,11 +119,11 @@ public class ContactDataSource implements ContactRepositoryInterface {
 
 	@Override
 	public int delete(Contact contact) {
-		long id = contact.getId();
+		String id = contact.getId();
 		dropAllEmailsForContact(id);
 		dropAllPhonesForContact(id);
 		return database.delete(MySQLiteHelper.TABLE_CONTACTS,
-				MySQLiteHelper.COLUMN_ID + " = " + id, null);
+				MySQLiteHelper.COLUMN_ID + " = '" + id + "'", null);
 	}
 
 	@Override
@@ -135,7 +136,7 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TITLE, contact.getTitle());
 		values.put(MySQLiteHelper.COLUMN_CONTACT_TWITTER_ID,
 				contact.getTwitterId());
-		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contact.getId(), null);
+		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = '" + contact.getId() + "'", null);
 		
 		addAllEmailsForContact(contact.getId(), contact.getEmails());
 		addAllPhonesForContact(contact.getId(), contact.getPhoneNumbers());
@@ -145,11 +146,14 @@ public class ContactDataSource implements ContactRepositoryInterface {
 	}
 
 	@Override
-	public Contact get(long contactId) {
+	public Contact get(String contactId) {
 		Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS,
-				allContactColumns, MySQLiteHelper.COLUMN_ID + " = " + contactId, null,
+				allContactColumns, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null,
 				null, null, null);
 		cursor.moveToFirst();
+		if(cursor.isAfterLast()){
+			return null;
+		}
 		Contact contact = cursorToContact(cursor);
 		cursor.close();
 
@@ -158,7 +162,7 @@ public class ContactDataSource implements ContactRepositoryInterface {
 
 	private Contact cursorToContact(Cursor cursor) {
 		Contact contact = new Contact(
-				(int) cursor.getLong(cursor.getColumnIndex(MySQLiteHelper.COLUMN_ID)),
+				cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_ID)),
 				cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_NAME)));
 		contact.setTitle(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_TITLE)));
 		String defaultPhone = getDefaultPhone(contact.getId());
@@ -185,9 +189,9 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		return contact;
 	}
 	
-	private List<String> getContactPhones(long contactId) {
+	private List<String> getContactPhones(String contactId) {
 		List<String> phones = new LinkedList<String>();
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_PHONE, allPhoneColumns, MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = " + contactId, null, null, null, null);
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_PHONE, allPhoneColumns, MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = '" + contactId + "'", null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			String phone = cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_PHONE_NUMBER));
@@ -199,9 +203,9 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		return phones;
 	}
 	
-	private List<String> getContactEmails(long contactId) {
+	private List<String> getContactEmails(String contactId) {
 		List<String> emails = new LinkedList<String>();
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId, null, null, null, null);
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = '" + contactId + "'", null, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			String email = cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_EMAIL_ADDRESS));
@@ -214,24 +218,24 @@ public class ContactDataSource implements ContactRepositoryInterface {
 				  
 	}
 	
-	private void dropAllEmailsForContact(long contactId) {
+	private void dropAllEmailsForContact(String contactId) {
 		database.delete(MySQLiteHelper.TABLE_EMAIL,
-				MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId, null);
+				MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = '" + contactId + "'", null);
 		ContentValues values = new ContentValues();
 		values.put(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_EMAIL_ID, "");
-		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contactId, null);
+		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null);
 	}
 	
-	private void dropAllPhonesForContact(long contactId) {
+	private void dropAllPhonesForContact(String contactId) {
 		database.delete(MySQLiteHelper.TABLE_PHONE,
-				MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = " + contactId, null);
+				MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = '" + contactId + "'", null);
 		ContentValues values = new ContentValues();
 		values.put(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_TEXT_PHONE_ID, "");
 		values.put(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_CONTACT_PHONE_ID, "");
-		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contactId, null);
+		database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null);
 	}
 	
-	private void addAllPhonesForContact(long contactId, List<String> phones) {
+	private void addAllPhonesForContact(String contactId, List<String> phones) {
 		for (String phone : phones) {
 			if (phone != null && !"".equals(phone.trim()) && !phoneNumberExists(contactId, phone)) {
 				ContentValues values = new ContentValues();
@@ -242,7 +246,7 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		}
 	}
 	
-	private void addAllEmailsForContact(long contactId, List<String> emails) {
+	private void addAllEmailsForContact(String contactId, List<String> emails) {
 		for (String email : emails) {
 			if (email != null && !"".equals(email.trim()) && !emailExists(contactId, email)) {
 				Log.i("smcad", "Adding : [" + email + "] to Contact [" + contactId + "]");
@@ -254,11 +258,11 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		}
 	}
 	
-	private void setDefaultEmail(long contactId, String email) {
+	private void setDefaultEmail(String contactId, String email) {
 		Log.i("smcad", "setDefaultEmail : ["+email+"] for contact [" + contactId + "]");
 		if (email != null && !"".equals(email.trim()) && emailExists(contactId, email)) {
 			Log.i("smcad", "searching for email [" + email + "]");
-			String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId;
+			String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = '" + contactId + "'";
 			Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, where, null, null, null, null);
 			cursor.moveToFirst();
 			if (cursor.getCount() > 0) {
@@ -267,39 +271,39 @@ public class ContactDataSource implements ContactRepositoryInterface {
 				values.put(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_EMAIL_ID, email_id);
 				
 				Log.i("smcad", "setting default email table id [" + email_id + "] for contact [" + contactId + "]");
-				database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contactId, null);	
+				database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null);	
 			}
 			cursor.close();
 		}
 	}
 	
-	private void setDefaultPhone(long contactId, String phone) {
+	private void setDefaultPhone(String contactId, String phone) {
 		setDefaultPhoneHelper(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_CONTACT_PHONE_ID, contactId, phone);
 	}
 
-	private void setDefaultText(long contactId, String phone) {
+	private void setDefaultText(String contactId, String phone) {
 		setDefaultPhoneHelper(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_TEXT_PHONE_ID, contactId, phone);
 	}
 	
-	private void setDefaultPhoneHelper(String column, long contactId, String phone) {
+	private void setDefaultPhoneHelper(String column, String contactId, String phone) {
 		Log.i("smcad", "setDefaultPhoneHelper(" + column + ", " + contactId + ", " + phone + ")");
 		if (phone != null && !"".equals(phone.trim()) && phoneNumberExists(contactId, phone)) {
-			String where = MySQLiteHelper.COLUMN_PHONE_NUMBER + " = '" + phone + "' AND " + MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = " + contactId;
+			String where = MySQLiteHelper.COLUMN_PHONE_NUMBER + " = '" + phone + "' AND " + MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = '" + contactId + "'";
 			Cursor cursor = database.query(MySQLiteHelper.TABLE_PHONE, allPhoneColumns, where, null, null, null, null);
 			cursor.moveToFirst();
 			if (cursor.getCount() > 0) {
 				int phone_id = cursor.getInt(cursor.getColumnIndex(MySQLiteHelper.COLUMN_PHONE_ID));
 				ContentValues values = new ContentValues();
 				values.put(column, phone_id);
-				database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = " + contactId, null);
+				database.update(MySQLiteHelper.TABLE_CONTACTS, values, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null);
 			}
 			cursor.close();
 		}
 	}
 
-	private String getDefaultEmail(long contactId) {
+	private String getDefaultEmail(String contactId) {
 		int email_id = -1;
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS, allContactColumns, MySQLiteHelper.COLUMN_ID + " = " + contactId, null, null, null, null);
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS, allContactColumns, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null, null, null, null);
 		if (cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			email_id = cursor.getInt(cursor.getColumnIndex(MySQLiteHelper.COLUMN_CONTACT_DEFAULT_EMAIL_ID));
@@ -318,19 +322,19 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		return "";
 	}
 	
-	private String getDefaultPhone(long contactId) {
+	private String getDefaultPhone(String contactId) {
 		return getPhoneHelper(contactId, MySQLiteHelper.COLUMN_CONTACT_DEFAULT_CONTACT_PHONE_ID);
 	}
 	
 	
 	
-	private String getDefaultText(long contactId) {
+	private String getDefaultText(String contactId) {
 		return getPhoneHelper(contactId, MySQLiteHelper.COLUMN_CONTACT_DEFAULT_TEXT_PHONE_ID);
 	}
 	
-	private String getPhoneHelper(long contactId, String column) {
+	private String getPhoneHelper(String contactId, String column) {
 		int phone_id = -1;
-		Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS, allContactColumns, MySQLiteHelper.COLUMN_ID + " = " + contactId, null, null, null, null);
+		Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS, allContactColumns, MySQLiteHelper.COLUMN_ID + " = '" + contactId + "'", null, null, null, null);
 		if (cursor.getCount() > 0) {
 			cursor.moveToFirst();
 			phone_id = cursor.getInt(cursor.getColumnIndex(column));
@@ -349,8 +353,8 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		return "";
 	}
 	
-	private boolean phoneNumberExists(long contactId, String phone) {
-		String where = MySQLiteHelper.COLUMN_PHONE_NUMBER + " = '" + phone + "' AND " + MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = " + contactId;
+	private boolean phoneNumberExists(String contactId, String phone) {
+		String where = MySQLiteHelper.COLUMN_PHONE_NUMBER + " = '" + phone + "' AND " + MySQLiteHelper.COLUMN_PHONE_PARENT_ID + " = '" + contactId + "'";
 		Cursor cursor = database.query(MySQLiteHelper.TABLE_PHONE, allPhoneColumns, where, null, null, null, null);
 		cursor.moveToFirst();
 		boolean exists = cursor.getCount() > 0;
@@ -358,8 +362,8 @@ public class ContactDataSource implements ContactRepositoryInterface {
 		return exists;
 	}
 	
-	private boolean emailExists(long contactId, String email) {
-		String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = " + contactId;
+	private boolean emailExists(String contactId, String email) {
+		String where = MySQLiteHelper.COLUMN_EMAIL_ADDRESS + " = '" + email + "' AND " + MySQLiteHelper.COLUMN_EMAIL_PARENT_ID + " = '" + contactId + "'";
 		Cursor cursor = database.query(MySQLiteHelper.TABLE_EMAIL, allEmailColumns, where, null, null, null, null);
 		boolean exists = cursor.getCount() > 0;
 		cursor.close();

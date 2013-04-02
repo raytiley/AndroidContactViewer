@@ -3,7 +3,7 @@ package com.example.AndroidContactViewer.datastore;
 import android.content.Context;
 
 public class ContactRepositoryFactory {
-	private static final boolean useWeb = false;
+	private static final boolean useWeb = true;
 
 	private static ContactRepositoryFactory INSTANCE;
 	private ContactRepositoryFactory(){

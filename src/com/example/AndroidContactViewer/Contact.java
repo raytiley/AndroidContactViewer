@@ -24,49 +24,49 @@ public class Contact {
 	/**
 	 * The contact ID
 	 */
-	private String _contactId;
+	private String id;
 
 	/**
 	 * @param _contactId the _contactId to set
 	 */
 	public void set_contactId(String _contactId) {
-		this._contactId = _contactId;
+		this.id = _contactId;
 	}
 
 	/**
 	 * The contact name.
 	 */
-	private String _name;
+	private String name;
 
 	/**
 	 * The contact's title.
 	 */
-	private String _title;
+	private String title;
 
 	/**
 	 * The default phone number to use for texting.
 	 */
-	private String _defaultTextPhone;
+	private String default_txt_phone;
 
 	/**
 	 * The default phone number to use when making a call.
 	 */
-	private String _defaultContactPhone;
+	private String default_call_phone;
 
 	/**
 	 * The list of all phone numbers associated with this contact.
 	 */
-	private SortedSet<String> _phones;
+	private SortedSet<String> phones;
 
 	/**
 	 * The default e-mail to use to send an e-mail.
 	 */
-	private String _defaultEmail;
+	private String default_email;
 
 	/**
 	 * The list of all e-mails associated with this contact.
 	 */
-	private SortedSet<String> _emails;
+	private SortedSet<String> emails;
 
 	/**
 	 * The contact's Twitter ID.
@@ -82,26 +82,27 @@ public class Contact {
 	 *            the contact's name
 	 */
 	public Contact(String contactId, String name) {
-		_contactId = contactId;
-		_name = name;
-		_title = "";
-		_defaultContactPhone = "";
-		_defaultTextPhone = "";
-		_phones = new TreeSet<String>();
-		_defaultEmail = "";
-		_emails = new TreeSet<String>();
+		id = contactId;
+		this.name = name;
+		title = "";
+		default_call_phone = "";
+		default_txt_phone = "";
+		phones = new TreeSet<String>();
+		default_email = "";
+		emails = new TreeSet<String>();
 		_twitterId = "";
 	}
 	
 	public Contact(String name){
 		this(UUID.randomUUID().toString().replace('-', 'x'), name);
 	}
+	
 
 	/**
 	 * Set the contact's name.
 	 */
 	public Contact setName(String name) {
-		_name = name;
+		this.name = name;
 		return this;
 	}
 
@@ -109,22 +110,22 @@ public class Contact {
 	 * Get the contact's name.
 	 */
 	public String getName() {
-		return _name;
+		return name;
 	}
 
 	/**
 	 * @return the contact's default texting phone number
 	 */
 	public String getDefaultTextPhone() {
-		return _defaultTextPhone;
+		return default_txt_phone;
 	}
 
 	/**
 	 * Set's the contact's default texting phone number.
 	 */
 	public Contact setDefaultTextPhone(String defaultTextPhone) {
-		_defaultTextPhone = defaultTextPhone;
-		this.addPhoneNumber(_defaultTextPhone);
+		default_txt_phone = defaultTextPhone;
+		this.addPhoneNumber(default_txt_phone);
 		return this;
 	}
 
@@ -132,14 +133,14 @@ public class Contact {
 	 * @return the contact's default contact phone number
 	 */
 	public String getDefaultContactPhone() {
-		return _defaultContactPhone;
+		return default_call_phone;
 	}
 
 	/**
 	 * Set's the contact's default contact phone number.
 	 */
 	public Contact setDefaultContactPhone(String defaultContactPhone) {
-		_defaultContactPhone = defaultContactPhone;
+		default_call_phone = defaultContactPhone;
 		this.addPhoneNumber(defaultContactPhone);
 		return this;
 	}
@@ -150,7 +151,7 @@ public class Contact {
 	 * @return The contact's phone numbers.
 	 */
 	public List<String> getPhoneNumbers() {
-		return new ArrayList<String>(_phones);
+		return new ArrayList<String>(phones);
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class Contact {
 	 */
 	public Contact addPhoneNumber(String phoneNumber) {
         if(phoneNumber.length() > 1) {
-		    _phones.add(phoneNumber);
+		    phones.add(phoneNumber);
         }
         return this;
 	}
@@ -171,21 +172,21 @@ public class Contact {
 	 * @return The contact's id
 	 */
 	public String getId() {
-		return _contactId;
+		return id;
 	}
 
 	/**
 	 * @return The contact's title
 	 */
 	public String getTitle() {
-		return _title;
+		return title;
 	}
 
 	/**
 	 * Sets the contact's title.
 	 */
 	public Contact setTitle(String title) {
-		_title = title;
+		this.title = title;
 		return this;
 	}
 
@@ -193,14 +194,14 @@ public class Contact {
 	 * @return the contact's default e-mail address
 	 */
 	public String getDefaultEmail() {
-		return _defaultEmail;
+		return default_email;
 	}
 
 	/**
 	 * Sets the contact's default e-mail address.
 	 */
 	public Contact setDefaultEmail(String defaultEmail) {
-		_defaultEmail = defaultEmail;
+		default_email = defaultEmail;
 		this.addEmail(defaultEmail);
 		return this;
 	}
@@ -211,7 +212,7 @@ public class Contact {
 	 * @return The contact's e-mails.
 	 */
 	public List<String> getEmails() {
-		return new ArrayList<String>(_emails);
+		return new ArrayList<String>(emails);
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class Contact {
 	 */
 	public Contact addEmail(String email) {
         if(email.length() > 1) {
-		    _emails.add(email);
+		    emails.add(email);
         }
         return this;
 	}
@@ -246,11 +247,22 @@ public class Contact {
 	 * Returns a string representation of this class.
 	 */
 	public String toString() {
-		if (_title != null) {
-			return _name + " (" + _title + ")";
+		if (title != null) {
+			return name + " (" + title + ")";
 		} else {
-			return _name;
+			return name;
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		if(id != null){
+			return id.hashCode();
+		}
+		return super.hashCode();
 	}
 
 	/**
@@ -261,18 +273,21 @@ public class Contact {
 		if (!(other instanceof Contact)) {
 			return false;
 		}
-		if (((Contact) other)._contactId == _contactId) {
+		if (((Contact) other).id == id) {
+			return true;
+		}
+		if(((Contact) other).id.equals(id)){
 			return true;
 		}
 		return false;
 	}
 
     public void clearEmailsAndPhones() {
-        this._defaultContactPhone = "";
-        this._defaultTextPhone = "";
-        this._defaultEmail = "";
-        this._emails.clear();
-        this._phones.clear();
+        this.default_call_phone = "";
+        this.default_txt_phone = "";
+        this.default_email = "";
+        this.emails.clear();
+        this.phones.clear();
     }
 
     public void downloadGravatar(Context context) {

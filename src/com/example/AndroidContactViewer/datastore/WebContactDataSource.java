@@ -23,6 +23,13 @@ import com.example.AndroidContactViewer.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Data source which updates a web repository with changes as they are made.
+ * 
+ * This data source assumes a reliable network connection, and as such
+ * only retrieves contacts from the web service on startup. All updates are propagated
+ * to the web service, but reads are all done locally after the initial update.
+ */
 public class WebContactDataSource implements ContactRepositoryInterface {
 	private static final String URL_BASE = "http://mssecontacts.herokuapp.com/";
 	private boolean initialRead = true;
@@ -36,111 +43,89 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 		@Override
 		protected Void doInBackground(Contact... contact) {
 
-				try{
-					AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
-					HttpPut request = new HttpPut(URL_BASE + "contacts/" + contact[0].getId());
-					request.addHeader("Content-Type", "application/json");
-					Gson gson = new Gson();
-					String contactStr = gson.toJson(contact[0]);
-					System.out.println(contactStr);
-					request.setEntity(new StringEntity(contactStr));
+			try{
+				AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
+				HttpPut request = new HttpPut(URL_BASE + "contacts/" + contact[0].getId());
+				request.addHeader("Content-Type", "application/json");
+				Gson gson = new Gson();
+				String contactStr = gson.toJson(contact[0]);
+				System.out.println(contactStr);
+				request.setEntity(new StringEntity(contactStr));
 
-					HttpResponse response = client.execute(request);
-					BufferedReader in = new BufferedReader(new InputStreamReader(
-							response.getEntity().getContent()));
-					String inputLine;
-					while ((inputLine = in.readLine()) != null) {
-						System.out.println(inputLine);
-					}
-
-					// Apache IOUtils makes this pretty easy :)
-					client.close();
-
-					return null;
-				} catch (Exception e){
-					Log.d("CONTACTS", e.getMessage());
-					return null;
+				HttpResponse response = client.execute(request);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						response.getEntity().getContent()));
+				String inputLine;
+				while ((inputLine = in.readLine()) != null) {
+					Log.v("CONTACTS", inputLine);
 				}
-
+				client.close();
+				return null;
+			} catch (Exception e){
+				Log.d("CONTACTS", e.getMessage());
+				return null;
+			}
 		}
-
-
 	}
-	
+
 	private class DeleteContact extends AsyncTask<Contact, Void, Void>{
 
 		@Override
 		protected Void doInBackground(Contact... contact) {
 
-				try{
-					AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
-					HttpDelete request = new HttpDelete(URL_BASE + "contacts/" + contact[0].getId());
-					request.addHeader("Content-Type", "application/json");
+			try{
+				AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
+				HttpDelete request = new HttpDelete(URL_BASE + "contacts/" + contact[0].getId());
+				request.addHeader("Content-Type", "application/json");
 
-					HttpResponse response = client.execute(request);
-					BufferedReader in = new BufferedReader(new InputStreamReader(
-							response.getEntity().getContent()));
-					String inputLine;
-					while ((inputLine = in.readLine()) != null) {
-						System.out.println(inputLine);
-					}
-
-					// Apache IOUtils makes this pretty easy :)
-					client.close();
-
-					return null;
-				} catch (Exception e){
-					Log.d("CONTACTS", e.getMessage());
-					return null;
+				HttpResponse response = client.execute(request);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						response.getEntity().getContent()));
+				String inputLine;
+				while ((inputLine = in.readLine()) != null) {
+					Log.v("CONTACTS", inputLine);
 				}
+				client.close();
 
+				return null;
+			} catch (Exception e){
+				Log.d("CONTACTS", e.getMessage());
+				return null;
+			}
 		}
-
-
 	}
-	
+
 	private class PostContact extends AsyncTask<Contact, Void, Void>{
 
 		@Override
 		protected Void doInBackground(Contact... contact) {
 
-				try{
-					AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
-					HttpPost request = new HttpPost(URL_BASE + "contacts/");
-					request.addHeader("Content-Type", "application/json");
-					Gson gson = new Gson();
-					String contactStr = gson.toJson(contact[0]);
-					System.out.println(contactStr);
-					request.setEntity(new StringEntity(contactStr));
+			try{
+				AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
+				HttpPost request = new HttpPost(URL_BASE + "contacts/");
+				request.addHeader("Content-Type", "application/json");
+				Gson gson = new Gson();
+				String contactStr = gson.toJson(contact[0]);
+				System.out.println(contactStr);
+				request.setEntity(new StringEntity(contactStr));
 
-					HttpResponse response = client.execute(request);
-					BufferedReader in = new BufferedReader(new InputStreamReader(
-							response.getEntity().getContent()));
-					String inputLine;
-					while ((inputLine = in.readLine()) != null) {
-						System.out.println(inputLine);
-					}
-
-					// Apache IOUtils makes this pretty easy :)
-					client.close();
-
-					return null;
-				} catch (Exception e){
-					Log.d("CONTACTS", e.getMessage());
-					return null;
+				HttpResponse response = client.execute(request);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						response.getEntity().getContent()));
+				String inputLine;
+				while ((inputLine = in.readLine()) != null) {
+					Log.v("CONTACTS", inputLine);
 				}
-
+				client.close();
+				return null;
+			} catch (Exception e){
+				Log.d("CONTACTS", e.getMessage());
+				return null;
+			}
 		}
-
-
 	}
 
-
 	private class GetContacts extends AsyncTask<String, Void, Void>{
-
-		/* (non-Javadoc)
-		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-		 */
 		@Override
 		protected void onPostExecute(Void result) {
 			WebContactDataSource.this.localContactDataSource.open();
@@ -158,6 +143,7 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 		@Override
 		protected Void doInBackground(String... arg0) {
 			try{
+				Log.d("CONTACTS", "Retrieving all contacts");
 				AndroidHttpClient client = AndroidHttpClient.newInstance("Android", null);
 				HttpUriRequest request = new HttpGet(URL_BASE + "/contacts");
 				request.setHeader("Content-Type", "application/json");
@@ -170,6 +156,7 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 				while((s = br.readLine()) != null){
 					json += s;
 				}
+				Log.v("CONTACTS", json);
 				List<Contact> cs = gson.fromJson(json, new TypeToken<List<Contact>>(){}.getType());
 				client.close();
 				for(Contact c : cs){
@@ -182,8 +169,6 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 				return null;
 			} 
 		}
-
-
 	}
 
 	public WebContactDataSource(Context context, DataUpdateHandler updateHandler){
@@ -194,6 +179,7 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 	@Override
 	public void open(){
 		this.localContactDataSource.open();
+		// On the first call to open, get any new contacts from the web service.
 		if(initialRead){
 			initialRead = false;
 			new GetContacts().execute();
@@ -242,4 +228,3 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 	}
 
 }
-

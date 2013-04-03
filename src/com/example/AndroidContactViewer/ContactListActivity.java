@@ -283,7 +283,8 @@ public class ContactListActivity extends ListActivity implements
 		}
 	}
 
-    private void createNewContacts() {
+    @SuppressWarnings("unused")
+	private void createNewContacts() {
         ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, this);
         datasource.open();
 

@@ -59,7 +59,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
             _defaultCallPhone = "";
             _defaultEmail = "";
 		} else {
-			ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+			ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, null);
 			datasource.open();
 			_contact = datasource.get(contactID);
 			datasource.close();
@@ -380,7 +380,7 @@ public class ContactEditActivity extends Activity implements OnClickListener {
         _contact.setDefaultEmail(_defaultEmail);
 
 //
-        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, null);
         datasource.open();
         if(_contact.getId() != null) {
             datasource.update(_contact);

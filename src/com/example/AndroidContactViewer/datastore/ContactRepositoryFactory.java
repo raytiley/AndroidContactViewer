@@ -17,9 +17,9 @@ public class ContactRepositoryFactory {
 		return INSTANCE;
 	}
 
-	public ContactRepositoryInterface getContactRepository(Context context){
+	public ContactRepositoryInterface getContactRepository(Context context, DataUpdateHandler updateHandler){
 		if(useWeb){
-			return new WebContactDataSource(context);
+			return new WebContactDataSource(context, updateHandler);
 		}
 		return new ContactDataSource(context);
 		

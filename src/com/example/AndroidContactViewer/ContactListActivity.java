@@ -27,9 +27,10 @@ import android.widget.*;
 
 import com.example.AndroidContactViewer.datastore.ContactRepositoryFactory;
 import com.example.AndroidContactViewer.datastore.ContactRepositoryInterface;
+import com.example.AndroidContactViewer.datastore.DataUpdateHandler;
 
 public class ContactListActivity extends ListActivity implements
-		OnClickListener {
+		OnClickListener, DataUpdateHandler{
 	private boolean filtered = false;
 	protected ContactAdapter contact_adapter;
 
@@ -50,10 +51,12 @@ public class ContactListActivity extends ListActivity implements
 		toolbar.hideLeftButton();
 
 		// initialize the list view
-		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, this);
 		datasource.open();
 
         // Check if the user wants to prepopulate some awesomeness
+		// This is awkward since we update the list asynchronously
+		/*
         if(datasource.count() == 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -73,6 +76,7 @@ public class ContactListActivity extends ListActivity implements
                     .create()
                     .show();
         }
+        */
 
 		contact_adapter = new ContactAdapter(this, R.layout.contact_list_item,
 				datasource.all());
@@ -128,7 +132,7 @@ public class ContactListActivity extends ListActivity implements
 
 	private void refreshList() {
 		this.contact_adapter.clear();
-		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, this);
 		datasource.open();
 		for(Contact c : datasource.all()) {
 			this.contact_adapter.add(c);
@@ -169,7 +173,7 @@ public class ContactListActivity extends ListActivity implements
                 return true;
             case R.id.delete:
                 //TODO Maybe a confirmation???
-                ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+                ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this,this);
                 this.contact_adapter.remove(contact);
                 datasource.open();
                 datasource.delete(contact);
@@ -280,7 +284,7 @@ public class ContactListActivity extends ListActivity implements
 	}
 
     private void createNewContacts() {
-        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, this);
         datasource.open();
 
         Contact ray = new Contact("Ray Tiley")
@@ -372,5 +376,10 @@ public class ContactListActivity extends ListActivity implements
 
 			return item;
 		}
+	}
+
+	@Override
+	public void dataUpdated() {
+		refreshList();
 	}
 }

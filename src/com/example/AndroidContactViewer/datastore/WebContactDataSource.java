@@ -25,10 +25,11 @@ import com.google.gson.reflect.TypeToken;
 
 public class WebContactDataSource implements ContactRepositoryInterface {
 	private static final String URL_BASE = "http://mssecontacts.herokuapp.com/";
-	private boolean reReadRequired = true;
+	private boolean initialRead = true;
 
 	private Set<Contact> contacts = new HashSet<Contact>();
 	private ContactDataSource localContactDataSource;
+	private DataUpdateHandler updateHandler;
 
 	private class PutContact extends AsyncTask<Contact, Void, Void>{
 
@@ -149,6 +150,9 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 				}
 			}
 			WebContactDataSource.this.localContactDataSource.close();
+			if(updateHandler != null){
+				updateHandler.dataUpdated();
+			}
 		}
 
 		@Override
@@ -182,16 +186,17 @@ public class WebContactDataSource implements ContactRepositoryInterface {
 
 	}
 
-	public WebContactDataSource(Context context){
+	public WebContactDataSource(Context context, DataUpdateHandler updateHandler){
 		this.localContactDataSource = new ContactDataSource(context);
+		this.updateHandler = updateHandler;
 	}
 
 	@Override
 	public void open(){
 		this.localContactDataSource.open();
-		if(reReadRequired){
+		if(initialRead){
+			initialRead = false;
 			new GetContacts().execute();
-			reReadRequired = false;
 		}
 	}
 

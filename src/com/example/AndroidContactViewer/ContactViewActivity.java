@@ -38,7 +38,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
 
 		ToolbarConfig toolbar = new ToolbarConfig(this,
 				res.getString(R.string.profile));
-		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+		ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, null);
 		datasource.open();
 		_contact = datasource.get(contactID);
 		datasource.close();
@@ -61,7 +61,7 @@ public class ContactViewActivity extends Activity implements OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this);
+        ContactRepositoryInterface datasource = ContactRepositoryFactory.getInstance().getContactRepository(this, null);
         datasource.open();
         _contact = datasource.get(_contact.getId());
         datasource.close();
